@@ -38,3 +38,28 @@ only show public recipes
 
 
 ```
+# Next.js
+> "Next.js is a React framework for building full-stack web applications. You use React Components to build user interfaces, and Next.js for additional features and optimizations."
+- Set-up environment
+    ```bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+    #restart terminal
+    nvm install 22 && nvm use 22
+    npm install -g npm@latest
+    ```
+- Development
+    - Run `npm run dev` to start the development server.
+    - Visit http://localhost:3000 to view your application.
+    - The page auto-updates as you edit the file.
+- Deploy
+    - The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+# File structures
+- Static assets to be served inside the `public` folder can be referenced by your code starting from the base URL (/).
+- Code for App Router is at `src/app/` folder. Code for Pages Router is at `src/pages/` folder.
+- In the app directory, nested folders define route structure. Each folder represents a route segment that is mapped to a corresponding segment in a URL path. However, even though route structure is defined through folders, a route is not publicly accessible until a page.js or route.js file is added to a route segment. And, even when a route is made publicly accessible, only the content returned by page.js or route.js is sent to the client.
+- Private folders can be created by prefixing a folder with an underscore: _folderName
+
+
+# Reference
+1. https://nextjs.org/docs/app/getting-started/project-structure
