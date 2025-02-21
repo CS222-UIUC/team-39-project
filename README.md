@@ -55,6 +55,25 @@ only show public recipes
     - The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 # File structures
+```
+├── book
+│   └── page.tsx
+├── db
+│   └── db.tsx
+├── favicon.ico
+├── globals.css
+├── layout.tsx
+├── login
+│   ├── backend.tsx
+│   └── page.tsx
+├── page.tsx
+├── piazza
+├── recipe
+│   └── page.tsx
+└── settings
+    └── page.tsx
+```
+- all files not using name "page.tsx" or "layout.tsx" are backend files
 - Static assets to be served inside the `public` folder can be referenced by your code starting from the base URL (/).
 - Code for App Router is at `src/app/` folder. Code for Pages Router is at `src/pages/` folder.
 - In the app directory, nested folders define route structure. Each folder represents a route segment that is mapped to a corresponding segment in a URL path. However, even though route structure is defined through folders, a route is not publicly accessible until a page.js or route.js file is added to a route segment. And, even when a route is made publicly accessible, only the content returned by page.js or route.js is sent to the client.
