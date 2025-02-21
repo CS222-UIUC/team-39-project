@@ -1,5 +1,6 @@
 # 222-project
 
+## Function Signatures
 ```
 ======login page======
 user name:
@@ -30,8 +31,7 @@ pure frontend
 
 get_recipe(credential, book_name, recipe_name) -> recipe_content, access
 update_recipe(credential, book_name, recipe_name, recipe_content)
-upload_photo()
-get_photo()
+upload_photo() -> photo_url
 
 =====piazza page======
 only show public recipes
