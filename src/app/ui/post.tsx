@@ -1,14 +1,16 @@
 // from https://nextjs.org/docs/app/getting-started/layouts-and-pages
-import { Post } from '@/app/ui/post'
+import Link from 'next/link'
 import { getPosts } from '@/app/lib/posts'
  
-export default async function Page() {
+export async function Post({ post }) {
   const posts = await getPosts()
  
   return (
     <ul>
       {posts.map((post) => (
-        <Post key={post.id} post={post} />
+        <li key={post.slug}>
+          <Link href={`/book/${post.slug}`}>{post.title}</Link>
+        </li>
       ))}
     </ul>
   )

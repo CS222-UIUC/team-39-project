@@ -40,6 +40,8 @@ only show public recipes
 ```
 # Next.js
 > "Next.js is a React framework for building full-stack web applications. You use React Components to build user interfaces, and Next.js for additional features and optimizations."
+- How to learn
+    - Zory's currently at https://nextjs.org/docs/app/getting-started/layouts-and-pages
 - Set-up environment
     ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
@@ -73,12 +75,16 @@ only show public recipes
 └── settings
     └── page.tsx
 ```
+- Next.js uses file-system based routing. In other words, urls will be based on the file structure. Folders are used to define the route segments that map to URL segments. Files (like page and layout) are used to create UI that is shown for a segment. (A forder, a page.)
 - all files not using name "page.tsx" or "layout.tsx" are backend files
+- layout: A layout is UI that is shared between multiple pages. On navigation, layouts preserve state, remain interactive, and do not rerender.
 - Static assets to be served inside the `public` folder can be referenced by your code starting from the base URL (/).
 - Code for App Router is at `src/app/` folder. Code for Pages Router is at `src/pages/` folder.
 - In the app directory, nested folders define route structure. Each folder represents a route segment that is mapped to a corresponding segment in a URL path. However, even though route structure is defined through folders, a route is not publicly accessible until a page.js or route.js file is added to a route segment. And, even when a route is made publicly accessible, only the content returned by page.js or route.js is sent to the client.
 - Private folders can be created by prefixing a folder with an underscore: _folderName
 
+# Testing
+Jest: https://nextjs.org/docs/app/building-your-application/testing/jest
 
 # Reference
 1. https://nextjs.org/docs/app/getting-started/project-structure
