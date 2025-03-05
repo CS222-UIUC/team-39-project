@@ -2,11 +2,12 @@ const mysql = require('mysql');
 
 
 const connection = mysql.createConnection({
-  host: 'localhost', 
-  user: 'username',
-  password: 'password',
-  database: 'databasename'
+  host: '127.0.0.1', 
+  user: 'cs222',
+  password: '',
+  database: 'cs222'
 });
+// Currently, it only allow local connections but how can we make it accessible from other machines?
 
 // Connect to the database
 connection.connect((err) => {

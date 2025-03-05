@@ -25,7 +25,6 @@ const getAllRecipes = (req, res) => {
   // Update a recipe
   const updateRecipe = (req, res) => {
     const { id } = req.params;
-
     res.json({ msg: `Update recipe with id ${id}` });
   };
   
