@@ -1,43 +1,22 @@
 // from https://react.dev/learn
-'use client'
-import { useState } from 'react';
+import { cookies } from 'next/headers'
+import { decrypt } from '@/app/lib/session'
+import { logout } from '@/app/actions/auth'
+import { redirect } from 'next/navigation'
 
-const user = {
-    name: 'Hedy Lamarr',
-    imageUrl: 'https://i.imgur.com/yXOvdOSs.jpg',
-    imageSize: 90,
-};
-
-export default function Page() {
-    const [isLoggedIn, setIsLoggedIn] = useState(1);
-    function LogoutButton() {
-        function handleClick() {
-            setIsLoggedIn(0);
-            alert('You have logged out!');
-        }
-          
-        return (
-          <button onClick={handleClick}>Logout</button>
-        );
+export default async function Page() {
+    const session = (await cookies()).get('session')?.value
+    const payload = await decrypt(session)
+   
+    if (!session || !payload) {
+        redirect('/login')
     }
-    let content = <h1>Please login, {user.name}!</h1>;
-    if (isLoggedIn) {
-      content = 
-        <div>
-            <h1>Welcome back, {user.name}!</h1>
-            <img
-                className="avatar"
-                src={user.imageUrl}
-                alt={'Photo of ' + user.name}
-                style={{
-                width: user.imageSize,
-                height: user.imageSize
-                }}
-            />
-            <LogoutButton />
-        </div>;
-    } else {
-        content = <h1>Please login, {user.name}!</h1>;
+    else {
+        let title = <h1>Welcome back, {payload.username}!</h1>;
+        let content = 
+            <form action={logout}>
+                <button type="submit">Logout</button>
+            </form>;
+        return <div> {title} {content} </div>
     }
-    return <div> {content} </div>
 }
