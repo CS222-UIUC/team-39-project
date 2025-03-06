@@ -39,7 +39,6 @@ export async function createSession(username: string) {
       sameSite: 'lax',
       path: '/',
     })
-    console.log("444")
 }
 
 export async function updateSession() {

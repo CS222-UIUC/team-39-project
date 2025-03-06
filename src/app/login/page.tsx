@@ -20,26 +20,4 @@ export default function Page() {
     //      <button onClick={handleClick}>Logout</button>
     //    );
     //}
-    //let content = <h1>Please login, {user.name}!</h1>;
-    //if (isLoggedIn) {
-    //  content = 
-    //    <div>
-    //        <h1>Welcome back, {user.name}!</h1>
-    //        <img
-    //            className="avatar"
-    //            src={user.imageUrl}
-    //            alt={'Photo of ' + user.name}
-    //            style={{
-    //            width: user.imageSize,
-    //            height: user.imageSize
-    //            }}
-    //        />
-    //        <LogoutButton />
-    //    </div>;
-    //} else {
-    //    content = 
-    //        <div>
-    //        </div>
-    //}
-    //return <div> {content} </div>
 }

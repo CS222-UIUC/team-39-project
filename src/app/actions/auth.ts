@@ -1,25 +1,8 @@
 "use server"
-import { SignupFormSchema, FormState } from '@/app/lib/definitions'
+import { SignupFormSchema } from '@/app/lib/definitions'
 import { createSession, deleteSession } from '@/app/lib/session'
 import { redirect } from 'next/navigation'
 
-
-// Next.js Route Handlers (App Router)
-//import { cookies } from 'next/headers';
-//import { getIronSession } from 'iron-session';
-
-//export async function GET() {
-//  const session = await getIronSession<SessionPayload>(await cookies(), { password: "...", cookieName: "...", ttl: 0 });
-//  return session;
-//}
-
-//export async function POST()
-//{
-//  const session = await getIronSession<SessionPayload>(await cookies(), { password: "...", cookieName: "...", ttl: 0 });
-//  session.username = "Alison";
-//  await session.save();
-//}
- 
 // https://nextjs.org/docs/app/building-your-application/authentication#2-validate-form-fields-on-the-server
 export async function signup(formData: FormData) {
   // Validate form fields
