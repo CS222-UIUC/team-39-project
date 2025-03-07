@@ -1,4 +1,4 @@
-# 222-project
+# FlavorBook
 
 ## Function Signatures
 ```
@@ -48,6 +48,8 @@ only show public recipes
     #restart terminal
     nvm install 22 && nvm use 22
     npm install -g npm@latest
+    npm install next@latest react@latest react-dom@latest zod bcryptjs jose fs nock
+    pnpm add iron-session
     ```
 - Development
     - Run `npm run dev` to start the development server.
