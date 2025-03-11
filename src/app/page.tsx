@@ -12,7 +12,7 @@ export default async function Page() {
         redirect('/login')
     }
     else {
-        let title = <h1>Welcome back, {payload.username}!</h1>;
+        let title = <h1>        git remote -v back, {payload.username}!</h1>;
         let content = 
             <form action={logout}>
                 <button type="submit">Logout</button>
