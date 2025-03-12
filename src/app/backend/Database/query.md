@@ -33,3 +33,4 @@ INSERT INTO FavRecipes (UserId, RecipeId)
 VALUES 
 ('user1', 1), 
 ('user2', 2);
+
