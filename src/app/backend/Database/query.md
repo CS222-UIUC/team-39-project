@@ -10,7 +10,7 @@ CREATE TABLE Recipes (
     Name VARCHAR(256)
 );
 
-CREATE TABLE FavRecipes (
+CREATE TABLE RecipeBook (
     UserId VARCHAR(256),
     RecipeId INT,
     PRIMARY KEY (UserId, RecipeId),
@@ -33,3 +33,6 @@ INSERT INTO FavRecipes (UserId, RecipeId)
 VALUES 
 ('user1', 1), 
 ('user2', 2);
+
+Add recipebook table
+
