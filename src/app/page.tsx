@@ -20,6 +20,11 @@ export default async function Page() {
         <div>
             <h1>Welcome back, {payload.username}!</h1>
             <RecipeBookActions initialRecipeBooks={recipeBooks} />
+            <form action={logout}>
+                <button type="submit" className="bg-red-500 text-white py-2 px-4 rounded">
+                    Logout
+                </button>
+            </form>
         </div>
     );
 }

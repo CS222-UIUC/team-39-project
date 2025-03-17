@@ -30,7 +30,7 @@ export default function RecipeBookList() {
   const addBook = () => {
     const name = prompt("Enter the name of the new recipe book:");
     if (!name) return;
-    const newBook = { id: `book-${Date.now()}`, name };
+    const newBook = { id: `book-${Date.now()}`, name };// for now, book id is assigned as book-<timestamp>
     setBooks([...books, newBook]);
   };
 
@@ -45,7 +45,10 @@ export default function RecipeBookList() {
       <ul>
         {books.map((book) => (
           <li key={book.id} className="mb-2 flex justify-between">
-            <Link href={`/book/user-recipebook/${book.id}`} className="text-blue-500">{book.name}</Link>
+            {/* for mapping links */}
+            <Link href={`/book/${book.name.replaceAll(' ', '-')}`}>
+              {book.name}
+            </Link>
             <button onClick={() => deleteBook(book.id)} className="text-red-500">Delete</button>
           </li>
         ))}

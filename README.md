@@ -62,6 +62,12 @@ only show public recipes
 ```
 ├── book
 │   └── page.tsx
+|   └── layout.tsx
+|       └── page.tsx
+|       └── bookName
+|           └── page.tsx
+|           └── foodName
+|               └── page.tsx
 ├── db
 │   └── db.tsx
 ├── favicon.ico
