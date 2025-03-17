@@ -14,8 +14,15 @@ const getAllRecipes = (req, res) => {
   
   // Get a single recipe
   const getRecipeById = (req, res) => {
-    const { id } = req.params;
-    res.json({ msg: `Get recipe with id ${id}` });
+    console.log('getRecipeById called');
+    const recipeId = req.params.id;
+    const query = "SELECT * FROM Recipes Where RecipeId = ? ORDER BY Name ASC";
+    connection.query(query, [recipeId], (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err });
+      }
+      res.json(rows);
+    });
   };
   
   // Post a new recipe

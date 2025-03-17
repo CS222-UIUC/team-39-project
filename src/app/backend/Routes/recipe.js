@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const recipeController = require('../Controller/recipeController');
 
+
 // Get all recipes
 router.get('/', recipeController.getAllRecipes);
 
