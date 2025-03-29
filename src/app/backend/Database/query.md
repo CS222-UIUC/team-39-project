@@ -57,3 +57,6 @@ VALUES
 
 Add recipebook table
 
+Add Ingredients and Steps: done
+Note User only modify recipe book 
+co-edit need more table to indictae the relation
