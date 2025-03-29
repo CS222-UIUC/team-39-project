@@ -1,4 +1,5 @@
 // from https://react.dev/learn
+"use client";
 import { LoginForm } from '@/app/ui/login-form'
 import { redirect } from 'next/navigation'
 
