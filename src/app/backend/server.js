@@ -9,9 +9,13 @@ const port = process.env.PORT;
 const connection = require('./Database/connection');
 
 // Import routes
-const recipeRoute = require('./Routes/recipeRoute');
+const recipeRoute = require('./Routes/recipe');
+const userRoute = require('./Routes/user');
+const recipebookRoute = require('./Routes/recipebook');
 
 app.use('/api/recipe', recipeRoute);
+app.use('/api/user', userRoute);
+app.use('/api/recipebook', recipebookRoute);
 
 app.get('/', (req, res) => {
     res.send('Backend is working!');

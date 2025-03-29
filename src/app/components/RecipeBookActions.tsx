@@ -18,16 +18,16 @@ interface RecipeBookActionsProps {
 
 export default function RecipeBookActions({ initialRecipeBooks }: RecipeBookActionsProps) {
     const [recipeBooks, setRecipeBooks] = useState<Recipe[]>(initialRecipeBooks);
-    const [newRecipeName, setNewRecipeName] = useState('');
+    const [newRecipeBookName, setNewRecipeBookName] = useState('');
 
-    const handleAddRecipe = async () => {
-        if (!newRecipeName.trim()) return;
-        const newRecipe = await addRecipeBook(newRecipeName);
+    const handleAddRecipeBook = async () => {
+        if (!newRecipeBookName.trim()) return;
+        const newRecipe = await addRecipeBook(newRecipeBookName);
         setRecipeBooks([...recipeBooks, newRecipe]);
-        setNewRecipeName('');
+        setNewRecipeBookName('');
     };
 
-    const handleDeleteRecipe = async (recipeId: number) => {
+    const handleDeleteRecipeBook = async (recipeId: number) => {
         await deleteRecipeBook(recipeId);
         setRecipeBooks(recipeBooks.filter(recipe => recipe.id !== recipeId));
     };
@@ -37,16 +37,16 @@ export default function RecipeBookActions({ initialRecipeBooks }: RecipeBookActi
             <h2>Your Recipe Book List</h2>
             <input 
                 type="text" 
-                value={newRecipeName} 
-                onChange={(e) => setNewRecipeName(e.target.value)}
+                value={newRecipeBookName} 
+                onChange={(e) => setNewRecipeBookName(e.target.value)}
                 placeholder="New recipe book name"
             />
-            <button onClick={handleAddRecipe}>Add Recipe Book</button>
+            <button onClick={handleAddRecipeBook}>Add Recipe Book</button>
             <ul>
                 {recipeBooks.map(recipe => (
                     <li key={recipe.id}>
-                        <Link href={`/book/${recipe.id}`}>{recipe.name}</Link>
-                        <button onClick={() => handleDeleteRecipe(recipe.id)}>Delete</button>
+                        <Link href={`/book/${recipe.name.replaceAll(' ', '-')}`}>{recipe.name}</Link>
+                        <button onClick={() => handleDeleteRecipeBook(recipe.id)}>Delete</button>
                     </li>
                 ))}
             </ul>

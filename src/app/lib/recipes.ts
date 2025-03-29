@@ -6,8 +6,8 @@ export type Recipe = {
 
 // Define the recipeBooks array at the top so all functions can access it
 let recipeBooks: Recipe[] = [
-    { id: 1, name: 'Spaghetti Carbonara' },
-    { id: 2, name: 'Chicken Alfredo' },
+    { id: 1, name: 'Recipe Book 1' },
+    { id: 2, name: 'Recipe Book 2' },
 ];
 
 // Fetch all recipe books

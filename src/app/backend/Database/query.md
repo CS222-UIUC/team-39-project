@@ -10,12 +10,33 @@ CREATE TABLE Recipes (
     Name VARCHAR(256)
 );
 
+CREATE TABLE RecipeBooks (
+    RecipeBookId INT PRIMARY KEY,
+    Name VARCHAR(256)
+);
+
+CREATE TABLE RecipesInRecipeBooks (
+    RecipeBookId INT,
+    RecipeId INT,
+    PRIMARY KEY (RecipeBookId, RecipeId),
+    FOREIGN KEY (RecipeBookId) REFERENCES RecipeBooks(RecipeBookId),
+    FOREIGN KEY (RecipeId) REFERENCES Recipes(RecipeId)
+); 
+
 CREATE TABLE FavRecipes (
     UserId VARCHAR(256),
     RecipeId INT,
     PRIMARY KEY (UserId, RecipeId),
     FOREIGN KEY (UserId) REFERENCES Users(UserId),
     FOREIGN KEY (RecipeId) REFERENCES Recipes(RecipeId)
+); 
+
+CREATE TABLE FavRecipeBooks (
+    UserId VARCHAR(256),
+    RecipeBookId INT,
+    PRIMARY KEY (UserId, RecipeBookId),
+    FOREIGN KEY (UserId) REFERENCES Users(UserId),
+    FOREIGN KEY (RecipeBookId) REFERENCES RecipeBooks(RecipeBookId)
 ); \\ 
 
  Add data for testing(remember we need to assign id in controller when inserting)\\\\ 
@@ -33,3 +54,6 @@ INSERT INTO FavRecipes (UserId, RecipeId)
 VALUES 
 ('user1', 1), 
 ('user2', 2);
+
+Add recipebook table
+
