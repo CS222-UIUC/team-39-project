@@ -1,4 +1,6 @@
 // from https://nextjs.org/docs/app/getting-started/layouts-and-pages
+import './globals.css'
+
 export default function RootLayout({
     children,
   }: {
