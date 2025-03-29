@@ -4,8 +4,8 @@ import { createSession, deleteSession } from '@/app/lib/session'
 import { redirect } from 'next/navigation'
 import { getEnvVariable } from '@/app/lib/config';
 
-const LOGIN_API = getEnvVariable('LOGIN_API');
-const SIGNUP_API = getEnvVariable('SIGNUP_API');
+const LOGIN_API = getEnvVariable('NEXT_PUBLIC_LOGIN_API');
+const SIGNUP_API = getEnvVariable('NEXT_PUBLIC_SIGNUP_API');
 
 // https://nextjs.org/docs/app/building-your-application/authentication#2-validate-form-fields-on-the-server
 export async function signup(formData: FormData) {

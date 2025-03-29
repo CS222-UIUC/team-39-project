@@ -17,9 +17,9 @@ const getAllRecipes = (req, res) => {
     console.log('getRecipeById called');
     const recipeId = req.params.id;
     const query = "SELECT * FROM Recipes WHERE RecipeId = ? ORDER BY Name ASC";
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    //res.setHeader("Access-Control-Allow-Origin", "*");
+    //res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+    //res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     connection.query(query, [recipeId], (err, rows) => {
         if (err) {
             console.error("Database query error:", err);
