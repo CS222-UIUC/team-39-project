@@ -1,9 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/nextjs
 # Edit at https://www.toptal.com/developers/gitignore?templates=nextjs
+.vscode/
 
 ### NextJS ###
 # dependencies
 /node_modules
+/src/app/backend/node_modules
 /.pnp
 .pnp.js
 

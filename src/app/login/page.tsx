@@ -1,16 +1,24 @@
-import Image from "next/image";
+// from https://react.dev/learn
+"use client";
+import { LoginForm } from '@/app/ui/login-form'
+import { redirect } from 'next/navigation'
 
-function LoginButton() {
-    return (
-      <button>I'm a login button</button>
-    );
-}
-
+//https://react.dev/reference/react-dom/components/input
 export default function Page() {
+    function SignupPageButton() {
+        function handleClick() {
+            redirect('/signup')
+        }
+        return (
+          <button onClick={handleClick}>Click here for signing up instead</button>
+        );
+    }
+    
     return (
         <div>
-            <h1>This is our login page</h1>
-            <LoginButton />
+            <h1>Please login</h1>
+            <SignupPageButton />
+            <LoginForm />
         </div>
-    )
+    );
 }

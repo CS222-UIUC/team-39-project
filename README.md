@@ -1,43 +1,103 @@
-# 222-project
+# FlavorBook
 
-## Function Signatures
+## Backend Objects
+- user
+    - user_id
+    - username
+    - pwd
+    - owner_of: list of recipe book id
+    - read_access_to: list of recipe book id
+    - coedit_access_to: list of recipe book id
+- recipe book
+    - book_id
+    - book_name (might contain whitespace, emoji, etc.)
+    - book_list
+- recipe
+    - recipe_id
+    - recipe_name (might contain whitespace, emoji, etc.)
+    - recipe_category (appetizer, main course, dessert, etc.)
+    - recipe_ingredients
+    - recipe_steps
+
+## Backend Signatures
 ```
 ======login page======
-user name:
-pwd:
-login register
+http://localhost:5000/api/auth/login
+- input: username, pwd
+- return: response.ok == True if successful
 
-check_user_pwd(name, pwd) -> credential
-create_user(name, pwd) -> credential
+======signup page======
+http://localhost:5000/api/auth/signup
+- input: username, pwd
+- return: response.ok == True if successful
+
+======user page======
+http://localhost:5000/api/user/invite_read
+- input: username, invited_username, book_name
+- return: response.ok == True if successful
+    
+http://localhost:5000/api/user/invite_coedit
+- input: username, invited_username, book_name
+- return: response.ok == True if successful
 
 =====main page======
-plus button
-list view
+http://localhost:5000/api/user/get_book_list
+- input: username
+- return: list of book names
 
-get_book_list(credential) -> list
-create_book(credential, book_name)
-delete_book(credential, book_name)
+http://localhost:5000/api/user/create_book
+- input: username, book_name
+- return: response.ok == True if successful
+
+http://localhost:5000/api/user/delete_book
+- input: username, book_name
+- return: response.ok == True if successful
+
+http://localhost:5000/api/user/rename_book
+- input: username, book_name, new_book_name
+- return: response.ok == True if successful
 
 ======recipe book page======
-plus button
-list view
+http://localhost:5000/api/recipebook/get_recipe_list
+- input: username, book_name
+- return: list of recipe names
 
-get_recipe(credential, book_name, recipe_name) -> list
-create_recipe(credential, recipe_name)
-delete_recipe(credential, recipe_name)
+http://localhost:5000/api/recipebook/create_recipe
+- input: username, book_name, recipe_name
+- return: response.ok == True if successful
+
+http://localhost:5000/api/recipebook/delete_recipe
+- input: username, book_name, recipe_name
+- return: response.ok == True if successful
+
+http://localhost:5000/api/recipebook/rename_recipe
+- input: username, book_name, recipe_name, new_recipe_name
+- return: response.ok == True if successful
 
 =====recipe editing page======
-pure frontend
+http://localhost:5000/api/recipe/get_recipe
+- input: username, book_name, recipe_name
+- return: recipe_category, recipe_ingredients (markdown), recipe_steps (markdown)
 
-get_recipe(credential, book_name, recipe_name) -> recipe_content, access
-update_recipe(credential, book_name, recipe_name, recipe_content)
-upload_photo() -> photo_url
+http://localhost:5000/api/recipe/update_recipe
+- input: username, book_name, recipe_name, recipe_category, recipe_ingredients, recipe_steps
+- return: response.ok == True if successful
+
+http://localhost:5000/api/recipe/upload_photo
+- input: username, book_name, recipe_name, photo
+- return: photo_url
 
 =====piazza page======
-only show public recipes
-
+http://localhost:5000/api/piazza/get_recipe_list
+- return: list of (recipe owner usernames, recipe names)
 
 ```
+# Set up backend
+```
+cd src/app/backend
+npm install express mysql dotenv notemon cors
+```
+
 # Next.js
 > "Next.js is a React framework for building full-stack web applications. You use React Components to build user interfaces, and Next.js for additional features and optimizations."
 - How to learn
@@ -48,6 +108,8 @@ only show public recipes
     #restart terminal
     nvm install 22 && nvm use 22
     npm install -g npm@latest
+    npm install next@latest react@latest react-dom@latest zod jose fs nock next-remove-imports @uiw/react-md-editor@v3.6.0 rehype-sanitize
+    pnpm add iron-session
     ```
 - Development
     - Run `npm run dev` to start the development server.
@@ -60,6 +122,12 @@ only show public recipes
 ```
 ├── book
 │   └── page.tsx
+|   └── layout.tsx
+|       └── page.tsx
+|       └── bookName
+|           └── page.tsx
+|           └── foodName
+|               └── page.tsx
 ├── db
 │   └── db.tsx
 ├── favicon.ico
@@ -88,3 +156,31 @@ Jest: https://nextjs.org/docs/app/building-your-application/testing/jest
 
 # Reference
 1. https://nextjs.org/docs/app/getting-started/project-structure
+
+# Just for backup
+```
+const TestButton = () => {
+    console.log("TestButton ready");
+    const click = async () => {
+        try {
+            alert("Button clicked!");
+            console.log("clicked");
+            const response = await fetch("http://localhost:2333/api/recipe/1", {
+                method: 'GET',
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            console.log("Fetched data:", data);
+        } catch (error) {
+            console.error("Fetch error:", error);
+        }
+    };
+    return (
+        <button onClick={click}>Click here for signing up instead</button>
+    );
+};
+```

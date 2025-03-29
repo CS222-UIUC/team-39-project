@@ -17,8 +17,12 @@ const getAllRecipes = (req, res) => {
     console.log('getRecipeById called');
     const recipeId = req.params.id;
     const query = "SELECT * FROM Recipes WHERE RecipeId = ? ORDER BY Name ASC";
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     connection.query(query, [recipeId], (err, rows) => {
         if (err) {
+            console.error("Database query error:", err);
             return res.status(500).json({ error: err });
         }
         if (rows.length === 0) {
@@ -75,7 +79,6 @@ const getAllRecipes = (req, res) => {
   // TODO
   const updateRecipe = (req, res) => {
     const { id } = req.params;
-
     res.json({ msg: `Update recipe with id ${id}` });
   };
   
