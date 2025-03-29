@@ -1,3 +1,4 @@
+"use client";
 // from https://nextjs.org/docs/app/getting-started/layouts-and-pages
 // this is the page where we have our user's recipe book list
 // we will need to fetch the user's recipe book list from the server
@@ -21,7 +22,6 @@ import { getPosts } from '@/app/lib/posts'
 //   )
 // }
 
-"use client";
 
 export default function RecipeBookList() {
   const [books, setBooks] = useState<{ id: string; name: string }[]>([]);

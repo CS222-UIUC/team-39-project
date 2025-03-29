@@ -20,6 +20,7 @@
     "react": "^19.0.0",
     "react-complex-tree": "^2.4.6",
     "react-dom": "^19.0.0",
+    "rehype-sanitize": "^6.0.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {

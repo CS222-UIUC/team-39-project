@@ -2,6 +2,10 @@
 import { SignupFormSchema } from '@/app/lib/definitions'
 import { createSession, deleteSession } from '@/app/lib/session'
 import { redirect } from 'next/navigation'
+import { getEnvVariable } from '@/app/lib/config';
+
+const LOGIN_API = getEnvVariable('LOGIN_API');
+const SIGNUP_API = getEnvVariable('SIGNUP_API');
 
 // https://nextjs.org/docs/app/building-your-application/authentication#2-validate-form-fields-on-the-server
 export async function signup(formData: FormData) {
@@ -22,11 +26,14 @@ export async function signup(formData: FormData) {
     const { username, password } = validatedFields.data
     
     // 3. Insert the user into the database or call an Auth Library's API
-    const response = await fetch('http://localhost:5000/api/auth/signup', {
+    const response = await fetch(SIGNUP_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
     });
+    
+    if (response.status === 403)
+        redirect('/403')
 
     if (!response.ok) {
         const errorData = await response.json();
@@ -44,11 +51,14 @@ export async function login(formData: FormData) {
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
     
-    const response = await fetch('http://localhost:5000/api/auth/login', {
+    const response = await fetch(LOGIN_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
     });
+    
+    if (response.status === 403)
+        redirect('/403')
 
     if (!response.ok) {
         const errorData = await response.json();
