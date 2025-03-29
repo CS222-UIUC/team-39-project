@@ -79,7 +79,6 @@ const getAllRecipes = (req, res) => {
   // TODO
   const updateRecipe = (req, res) => {
     const { id } = req.params;
-
     res.json({ msg: `Update recipe with id ${id}` });
   };
   
