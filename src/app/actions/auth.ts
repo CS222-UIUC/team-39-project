@@ -17,6 +17,7 @@ export async function signup(formData: FormData) {
     
     // If any form fields are invalid, return early
     if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors)
         return {
         errors: validatedFields.error.flatten().fieldErrors,
         }
@@ -26,6 +27,7 @@ export async function signup(formData: FormData) {
     const { username, password } = validatedFields.data
     
     // 3. Insert the user into the database or call an Auth Library's API
+    console.log("request sent")
     const response = await fetch(SIGNUP_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -37,6 +39,7 @@ export async function signup(formData: FormData) {
 
     if (!response.ok) {
         const errorData = await response.json();
+        console.log(errorData.error)
         return { errors: { general: errorData.error } };
     }
  
@@ -70,6 +73,6 @@ export async function login(formData: FormData) {
 }
  
 export async function logout() {
-  deleteSession()
-  redirect('/login')
+    deleteSession()
+    redirect('/login')
 }
