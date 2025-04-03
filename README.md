@@ -23,12 +23,12 @@
 ```
 ======login page======
 http://localhost:5000/api/auth/login
-- input: username, pwd
+- input: username, password
 - return: response.ok == True if successful
 
 ======signup page======
 http://localhost:5000/api/auth/signup
-- input: username, pwd
+- input: username, password
 - return: response.ok == True if successful
 
 ======user page======
@@ -95,7 +95,7 @@ http://localhost:5000/api/piazza/get_recipe_list
 # Set up backend
 ```
 cd src/app/backend
-npm install express mysql dotenv notemon cors
+npm install express mysql dotenv nodemon cors bcrypt jsonwebtoken
 ```
 
 # Next.js
