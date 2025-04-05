@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 
 export default function FoodDetailPage() {
-  const { bookId, foodId } = useParams();
+  const { bookId, foodId, foodName } = useParams();
   const [description, setDescription] = useState("This is the description of the food.");
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">{typeof foodId === 'string' ? foodId.replace("-", " ") : ""}</h2>
+      <h2 className="text-2xl font-bold mb-4">{typeof foodName === 'string' ? foodName.replace("-", " ") : ""}</h2>
       <textarea
         className="w-full border p-2 h-32"
         value={description}

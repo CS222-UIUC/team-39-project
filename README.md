@@ -108,6 +108,12 @@ http://localhost:5000/api/get_recipe_list
 cd src/app/backend
 npm install express mysql dotenv nodemon cors bcrypt jsonwebtoken
 ```
+### Run backend
+```
+cd src/app/backend
+npm run dev
+```
+If the backend is working, it will return a page saying "Backend is working!"
 
 # Run backend
 ```
