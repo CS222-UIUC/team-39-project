@@ -29,9 +29,10 @@ const signupUser = async (req, res) => {
       db.query('INSERT INTO Users (UserId, PassWord) VALUES (?, ?)', [username, hashedPassword], (err2) => {
         if (err2) return res.status(500).json({ error: err2.message });
 
-        const token = createToken(username);
-        res.status(200).json({ username, token });
-        console.log(`Signup successful for user '${username}'`);
+
+        const token = createToken(name);
+        res.status(200).json({ name, token });
+        console.log(`Signup successful for user '${name}'`);
 
       });
     });
