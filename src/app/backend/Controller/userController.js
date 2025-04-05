@@ -27,8 +27,21 @@ const signupUser = async (req, res) => {
       // Insert new user
       db.query('INSERT INTO Users (UserId, PassWord) VALUES (?, ?)', [name, hashedPassword], (err2) => {
         if (err2) return res.status(500).json({ error: err2.message });
-
         const token = createToken(name);
+
+        // newly added code, need to be tested
+        const defaultBookName = `${name}'s default Recipe Book`;
+        // Create default recipe book for new user
+        db.query('INSERT INTO RecipeBooks (Name) VALUES (?)', [defaultBookName], (bookErr, bookResult) => {
+          if (bookErr) return res.status(500).json({ error: bookErr.message });
+          const recipeBookId = bookResult.insertId;
+          // Add default recipe book to user's favorites
+          db.query('INSERT INTO FavRecipeBooks (UserId, RecipeBookId) VALUES (?, ?)', [name, recipeBookId], (favErr) => {
+            if (favErr) return res.status(500).json({ error: favErr.message });
+            console.log(`Signup successful for user '${name}', and default book '${defaultBookName}' created.`);
+            res.status(200).json({ name, token });
+          });
+        });
         res.status(200).json({ name, token });
         console.log(`Signup successful for user '${name}'`);
       });
