@@ -31,7 +31,6 @@ const signupUser = async (req, res) => {
         const token = createToken(name);
         res.status(200).json({ name, token });
         console.log(`Signup successful for user '${name}'`);
-
       });
     });
   } catch (err) {
