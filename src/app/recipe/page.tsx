@@ -1,8 +1,9 @@
 "use client";
-import React, { useState, useLayoutEffect, useRef } from "react";
-import MDEditor, { commands } from '@uiw/react-md-editor';
+import React, { useState, useLayoutEffect, useRef, useEffect } from "react";
+import MDEditor, { commands } from '@uiw/react-md-editor'; // https://github.com/uiwjs/react-md-editor?tab=readme-ov-file
 import rehypeSanitize from "rehype-sanitize";
 import { getEnvVariable } from '@/app/lib/config';
+import { uploadImage } from '@/app/actions/upload';
 
 const example_recipe_name = "Grilled chicken as in Chipotle";
 const example_ingredients = `
@@ -16,16 +17,65 @@ const example_ingredients = `
 * Black pepper`;
 const example_steps = `
 1. Mix everything together to marinate the chicken overnight.
-2. Preheat the grill on medium high.
+2. Preheat the grill on medium high. ![userphoto](https://www.helloimg.com/i/2025/04/06/67f17fb286570.jpg)
 2. Grill a whole piece of thigh for 10-15 min.
-3. Rest for 5min.
+3. Rest for 5min. ![userphoto](https://www.helloimg.com/i/2025/04/06/67f17fb35c2c8.jpg)
 4. Cut into smaller pieces.`;
+
+var _jsxRuntime = require("react/jsx-runtime");
+const imageUploadCommand = {
+    name: 'uploadImage',
+    keyCommand: 'uploadImage',
+    buttonProps: { 'aria-label': 'Insert image' },
+    icon: /*#__PURE__*/(0, _jsxRuntime.jsx)("svg", {
+        width: "12",
+        height: "12",
+        viewBox: "0 0 20 20",
+        children: /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
+            fill: "currentColor",
+            d: "M15 9c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4-7H1c-.55 0-1 .45-1 1v14c0 .55.45 1 1 1h18c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm-1 13l-6-5-2 2-4-5-4 8V4h16v11z"
+        })
+    }),
+    execute: async (state, api) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.style.display = 'none';
+
+        document.body.appendChild(input);
+        input.click();
+
+        input.onchange = async () => {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                console.log("Selected file:", file);
+                try {
+                    const response = await uploadImage(file);
+
+                    if (response.errors) {
+                        alert(`Upload failed: ${response.errors.general}`);
+                    } else {
+                        const imageUrl = response.url; // Assume the API returns the uploaded image URL
+                        const modifyText = `![userphoto](${imageUrl})\n`;
+                        api.replaceSelection(modifyText);
+                    }
+                } catch (error) {
+                    console.error("Image upload failed:", error);
+                    alert("An error occurred while uploading the image.");
+                }
+            }
+            document.body.removeChild(input);
+        };
+    },
+};
 
 const editorCommands = [
     commands.bold,
     commands.divider,
     commands.title1,
     commands.title3,
+    commands.divider,
+    imageUploadCommand,
     commands.divider,
     commands.unorderedListCommand,
     commands.orderedListCommand,
@@ -46,20 +96,22 @@ const calculateMarginAdjustedHeight = (el: HTMLElement): number => {
 };
 
 export default function RecipePage() {
-    const [mounted, setMounted] = useState(false);
-    const [value1, setValue1] = useState(example_ingredients);
-    const [value2, setValue2] = useState(example_steps);
     const [recipe_name, setName] = useState(example_recipe_name);
     const [category, setCategory] = useState(CATEGORIES[0]);
     const [preview, setPreview] = useState<"edit" | "preview">("preview");
-    const [editorHeight, setEditorHeight] = useState(200);
+    const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
 
+    const [value1, setValue1] = useState(example_ingredients); // value of editor 1
+    const [value2, setValue2] = useState(example_steps); // value of editor 2
+    // Calculating the height of the editor dynamically
+    const [mounted, setMounted] = useState(false);
+    const [editorHeight, setEditorHeight] = useState(200);
     const containerRef = useRef<HTMLDivElement>(null);
     const fixedElementsRef = useRef<HTMLDivElement>(null);
     const headerRef1 = useRef<HTMLHeadingElement>(null);
     const headerRef2 = useRef<HTMLHeadingElement>(null);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         setMounted(true);
         const calculateHeight = () => {
             if (containerRef.current && fixedElementsRef.current) {
@@ -73,8 +125,7 @@ export default function RecipePage() {
         };
 
         calculateHeight();
-        window.addEventListener("resize", calculateHeight); 
-        // Recalculate height after a slight delay on initial load
+        window.addEventListener("resize", calculateHeight);
         const timeoutId = setTimeout(calculateHeight, 0);
         return () => {
             window.removeEventListener("resize", calculateHeight);

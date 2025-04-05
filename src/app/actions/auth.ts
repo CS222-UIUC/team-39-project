@@ -3,9 +3,18 @@ import { SignupFormSchema } from '@/app/lib/definitions'
 import { createSession, deleteSession } from '@/app/lib/session'
 import { redirect } from 'next/navigation'
 import { getEnvVariable } from '@/app/lib/config';
+import { cookies } from 'next/headers'
+import { decrypt } from '@/app/lib/session'
 
 const LOGIN_API = getEnvVariable('NEXT_PUBLIC_LOGIN_API');
 const SIGNUP_API = getEnvVariable('NEXT_PUBLIC_SIGNUP_API');
+
+export async function getUsername() {
+    const session = (await cookies()).get('session')?.value
+    const payload = await decrypt(session)
+    if (!session || !payload) return null
+    return payload.username
+}
 
 // https://nextjs.org/docs/app/building-your-application/authentication#2-validate-form-fields-on-the-server
 export async function signup(formData: FormData) {
