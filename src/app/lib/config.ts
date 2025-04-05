@@ -1,4 +1,3 @@
-//"use client";
 export function getEnvVariable<T = string>(key: string): T {
     const value = process.env[key];
     console.log(`Environment variable ${key}:`, value);
