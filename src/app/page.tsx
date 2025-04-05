@@ -4,7 +4,8 @@ import { decrypt } from '@/app/lib/session'
 import { redirect } from 'next/navigation'
 import RecipeBookActions from '@/app/components/RecipeBookActions'
 import { getRecipeBookList } from '@/app/lib/recipes';
-
+import { logout } from '@/app/actions/auth'
+ 
 export default async function Page() {
     const session = (await cookies()).get('session')?.value
     const payload = await decrypt(session)

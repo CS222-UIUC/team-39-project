@@ -106,7 +106,7 @@ http://localhost:5000/api/get_recipe_list
 # Set up backend
 ```
 cd src/app/backend
-npm install express mysql dotenv notemon cors
+npm install express mysql dotenv nodemon cors bcrypt jsonwebtoken
 ```
 
 # Run backend

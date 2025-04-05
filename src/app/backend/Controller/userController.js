@@ -9,15 +9,16 @@ const createToken = (UserId) => {
 
 // signup a user
 const signupUser = async (req, res) => {
-  const { name, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!name || !password) {
+  if (!username || !password) {
     return res.status(400).json({ error: 'All fields must be filled!' });
   }
 
   try {
+    console.log(`Attempting to sign up user '${username}'`);
     // Check if user exists
-    db.query('SELECT * FROM Users WHERE UserId = ?', [name], async (err, results) => {
+    db.query('SELECT * FROM Users WHERE UserId = ?', [username], async (err, results) => {
       if (err) return res.status(500).json({ error: err.message });
       if (results.length > 0) return res.status(400).json({ error: 'Username already in use' });
 
@@ -25,7 +26,7 @@ const signupUser = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Insert new user
-      db.query('INSERT INTO Users (UserId, PassWord) VALUES (?, ?)', [name, hashedPassword], (err2) => {
+      db.query('INSERT INTO Users (UserId, PassWord) VALUES (?, ?)', [username, hashedPassword], (err2) => {
         if (err2) return res.status(500).json({ error: err2.message });
         const token = createToken(name);
 
@@ -44,6 +45,7 @@ const signupUser = async (req, res) => {
         });
         res.status(200).json({ name, token });
         console.log(`Signup successful for user '${name}'`);
+
       });
     });
   } catch (err) {
@@ -53,14 +55,14 @@ const signupUser = async (req, res) => {
 
 // login a user
 const loginUser = async (req, res) => {
-  const { name, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!name || !password) {
+  if (!username || !password) {
     return res.status(400).json({ error: 'All fields must be filled!' });
   }
 
   try {
-    db.query('SELECT * FROM Users WHERE UserId = ?', [name], async (err, results) => {
+    db.query('SELECT * FROM Users WHERE UserId = ?', [username], async (err, results) => {
       if (err) return res.status(500).json({ error: err.message });
       if (results.length === 0) return res.status(400).json({ error: 'Incorrect username' });
 
@@ -69,9 +71,9 @@ const loginUser = async (req, res) => {
 
       if (!match) return res.status(400).json({ error: 'Incorrect password' });
 
-      const token = createToken(name);
-      res.status(200).json({ name, token });
-      console.log(`login successful for user '${name}'`);
+      const token = createToken(username);
+      res.status(200).json({ username, token });
+      console.log(`login successful for user '${username}'`);
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
