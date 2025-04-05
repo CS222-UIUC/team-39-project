@@ -1,26 +1,31 @@
-//'use client'
-import { signup } from '@/app/actions/auth'
-//import { useActionState } from 'react'
- 
+'use client' // Required for state handling
+import { useState } from 'react';
+import { signup } from '@/app/actions/auth';
+
 export function SignupForm() {
-    //const [state, action, pending] = useActionState(signup, undefined)
+    const [error, setError] = useState<string | null>(null);
+
     return (
-        <form action={signup}>
-        {/*<form action={action}>*/}
+        <form action={async (formData) => {
+            setError(null); // Clear previous errors
+            const result = await signup(formData);
+            if (result?.errors?.general) {
+                setError(result.errors.general);
+            }
+        }}>
             <div>
-                <label htmlFor="username">User name: </label>
-                <input id="username" name="username" placeholder="at least 2 characters" />
-                {/*{state?.errors?.username && <p>{state.errors.username}</p>}*/}
+                <label htmlFor="username">Username: </label>
+                <input id="username" name="username" placeholder="at least 2 characters" required minLength={2} />
             </div>
             
             <div>
                 <label htmlFor="password">Password: </label>
-                <input id="password" name="password" placeholder="at least 4 characters" />
-                {/*{state?.errors?.password && <p>{state.errors.password}</p>}*/}
+                <input id="password" name="password" type="password" placeholder="at least 4 characters" required minLength={4} />
             </div>
             
-            <button type="submit">Sign-up</button>
-            {/*<button disabled={pending} type="submit">Login/Sign-up</button>*/}
+            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
+            
+            <button type="submit">Sign up</button>
         </form>
     );
 }

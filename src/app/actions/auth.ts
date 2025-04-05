@@ -4,8 +4,8 @@ import { createSession, deleteSession } from '@/app/lib/session'
 import { redirect } from 'next/navigation'
 import { getEnvVariable } from '@/app/lib/config';
 
-const LOGIN_API = getEnvVariable('LOGIN_API');
-const SIGNUP_API = getEnvVariable('SIGNUP_API');
+const LOGIN_API = getEnvVariable('NEXT_PUBLIC_LOGIN_API');
+const SIGNUP_API = getEnvVariable('NEXT_PUBLIC_SIGNUP_API');
 
 // https://nextjs.org/docs/app/building-your-application/authentication#2-validate-form-fields-on-the-server
 export async function signup(formData: FormData) {
@@ -17,6 +17,7 @@ export async function signup(formData: FormData) {
     
     // If any form fields are invalid, return early
     if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors)
         return {
         errors: validatedFields.error.flatten().fieldErrors,
         }
@@ -26,6 +27,7 @@ export async function signup(formData: FormData) {
     const { username, password } = validatedFields.data
     
     // 3. Insert the user into the database or call an Auth Library's API
+    console.log("request sent")
     const response = await fetch(SIGNUP_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -37,6 +39,7 @@ export async function signup(formData: FormData) {
 
     if (!response.ok) {
         const errorData = await response.json();
+        console.log(errorData.error)
         return { errors: { general: errorData.error } };
     }
  
@@ -70,6 +73,6 @@ export async function login(formData: FormData) {
 }
  
 export async function logout() {
-  deleteSession()
-  redirect('/login')
+    deleteSession()
+    redirect('/login')
 }

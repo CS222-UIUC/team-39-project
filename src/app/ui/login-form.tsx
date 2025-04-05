@@ -1,19 +1,29 @@
-import { login } from '@/app/actions/auth'
- 
+'use client' // Required for state handling
+import { useState } from 'react';
+import { login } from '@/app/actions/auth';
+
 export function LoginForm() {
-    //const [state, action, pending] = useActionState(signup, undefined)
+    const [error, setError] = useState<string | null>(null);
+
     return (
-        <form action={login}>
-        {/*<form action={action}>*/}
+        <form action={async (formData) => {
+            setError(null); // Clear previous errors
+            const result = await login(formData);
+            if (result?.errors?.general) {
+                setError(result.errors.general);
+            }
+        }}>
             <div>
-                <label htmlFor="username">User name: </label>
-                <input id="username" name="username" placeholder="at least 2 characters" />
+                <label htmlFor="username">Username: </label>
+                <input id="username" name="username" placeholder="at least 2 characters" required minLength={2} />
             </div>
             
             <div>
                 <label htmlFor="password">Password: </label>
-                <input id="password" name="password" placeholder="at least 4 characters" />
+                <input id="password" name="password" type="password" placeholder="at least 4 characters" required minLength={4} />
             </div>
+            
+            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
             
             <button type="submit">Login</button>
         </form>
