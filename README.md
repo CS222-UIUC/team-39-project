@@ -109,6 +109,12 @@ cd src/app/backend
 npm install express mysql dotenv notemon cors
 ```
 
+# Run backend
+```
+cd src/app/backend
+npm run dev
+```
+
 # Next.js
 > "Next.js is a React framework for building full-stack web applications. You use React Components to build user interfaces, and Next.js for additional features and optimizations."
 - How to learn
