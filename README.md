@@ -97,6 +97,12 @@ http://localhost:5000/api/piazza/get_recipe_list
 cd src/app/backend
 npm install express mysql dotenv nodemon cors bcrypt jsonwebtoken
 ```
+### Run backend
+```
+cd src/app/backend
+npm run dev
+```
+If the backend is working, it will return a page saying "Backend is working!"
 
 # Next.js
 > "Next.js is a React framework for building full-stack web applications. You use React Components to build user interfaces, and Next.js for additional features and optimizations."
