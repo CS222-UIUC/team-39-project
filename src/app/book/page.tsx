@@ -9,18 +9,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Post } from '@/app/ui/post'
 import { getPosts } from '@/app/lib/posts'
- 
-// export default async function Page() {
-//   const posts = await getPosts()
- 
-//   return (
-//     <ul>
-//       {posts.map((post) => (
-//         <Post key={post.id} post={post} />
-//       ))}
-//     </ul>
-//   )
-// }
 
 
 export default function RecipeBookList() {
@@ -46,8 +34,8 @@ export default function RecipeBookList() {
         {books.map((book) => (
           <li key={book.id} className="mb-2 flex justify-between">
             {/* for mapping links */}
-            <Link href={`/book/${book.name.replaceAll(' ', '-')}`}>
-              {book.name}
+            <Link href={`/book/${book.id.replaceAll(' ', '-')}`}>
+              {book.id}
             </Link>
             <button onClick={() => deleteBook(book.id)} className="text-red-500">Delete</button>
           </li>
