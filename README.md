@@ -52,7 +52,7 @@ http://localhost:2333/api/recipebook/
 
 http://localhost:2333/api/recipebook/
 - type: post
-- input: username, bookname
+- input: username, book_name
 - return: response.ok == True if successful
 
 http://localhost:2333/api/recipebook/
@@ -89,17 +89,17 @@ http://localhost:2333/api/recipe/get_one_recipe
 - input: username, book_name, recipe_name
 - return: recipe_name, recipe_category, recipe_ingredients (markdown), recipe_steps (markdown)
 
-http://localhost:5000/api/recipe/update_recipe
+http://localhost:2333/api/recipe/update_recipe
 -type：update
 - input: username, book_name, recipe_name, recipe_category, recipe_ingredients, recipe_steps
 - return: response.ok == True if successful
 
-http://localhost:5000/api/recipe/upload_photo(Should be done in frontend)
+http://localhost:2333/api/recipe/upload_photo(Should be done in frontend)
 - input: username, book_name, recipe_name, photo
 - return: photo_url
 
 =====piazza page======
-http://localhost:5000/api/get_recipe_list
+http://localhost:2333/api/get_recipe_list
 - return: list of (recipe owner usernames, recipe names)
 
 ```
