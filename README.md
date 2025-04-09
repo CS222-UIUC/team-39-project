@@ -94,7 +94,7 @@ http://localhost:2333/api/recipe/update_recipe
 - input: username, book_name, recipe_name, recipe_category, recipe_ingredients, recipe_steps
 - return: response.ok == True if successful
 
-http://localhost:2333/api/recipe/upload_photo(Should be done in frontend)
+http://localhost:2333/api/recipe/upload_photo(done by Zory in frontend! Thank you, Zory!)
 - input: username, book_name, recipe_name, photo
 - return: photo_url
 
