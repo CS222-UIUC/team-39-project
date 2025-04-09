@@ -96,19 +96,11 @@ const postRecipeBook = (req, res) => {
   };
   
   
-  // Update a recipeBook
-  // TODO
-  const updateRecipeBook = (req, res) => {
-    const { id } = req.params;
-
-    res.json({ msg: `Update recipeBook with id ${id}` });
-  };
   
   
   module.exports = {
     getAllRecipeBooks,
     postRecipeBook,
     deleteRecipeBook,
-    updateRecipeBook,
   };
   
