@@ -3,7 +3,7 @@ const connection = require('../Database/connection');
 // Get all recipeBooks
 const getAllRecipeBooks = (req, res) => {
   console.log('getAllRecipeBooks called');
-  const { username } = req.query; 
+  const { username } = req.body; 
   if (!username) {
     return res.status(400).json({ error: 'Username is required' });
   }

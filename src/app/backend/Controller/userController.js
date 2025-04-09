@@ -9,7 +9,7 @@ const createToken = (UserId) => {
 
 // signup a user
 const signupUser = async (req, res) => {
-  const { name: username, password } = req.body;
+  const { username, password } = req.body;
 
   if (!username || !password) {
     return res.status(400).json({ error: 'All fields must be filled!' });
