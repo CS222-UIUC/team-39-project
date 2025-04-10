@@ -12,7 +12,7 @@ router.post('/', recipebookController.postRecipeBook);
 // Delete a recipe book
 router.delete('/', recipebookController.deleteRecipeBook);
 
-// Update a recipe book
+// rename a recipe book
 router.patch('/', recipebookController.updateRecipeBook);
 
 module.exports = router;
