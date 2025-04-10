@@ -37,7 +37,7 @@ const signupUser = async (req, res) => {
         }
 
         const token = createToken(username);
-        const defaultBookName = `${username}'s beginner Recipe Book`;
+        const defaultBookName = `${username}'s Beginner Recipe Book`;
         // Create a default recipe book for the user
         db.query('INSERT INTO RecipeBooks (Name) VALUES (?)', [defaultBookName], (bookErr, bookResult) => {
           if (bookErr) {
@@ -54,7 +54,8 @@ const signupUser = async (req, res) => {
             }
 
             // beginenr sample recipe content
-            const example_recipe_name = "Beginner's Guide to FlavorBook";
+            `${username}'s Beginner Recipe Book`
+            const example_recipe_name = `${username}'s Beginner's Guide to FlavorBook`
             const example_ingredients = `### Instructions
 You can use the button on the top to switch between preview and editing modes.
 Note that you need an empty line between paragraphs. 
