@@ -9,7 +9,8 @@ const connection = mysql.createConnection({
   port: 3306
 });
 
-// For now, the database can only be accessed from the local machine, so how can we make it accessible from other machine.
+// For now, the database can only be accessed from the local machine,
+// so how can we make it accessible from other machine.
 
 // Connect to the database
 connection.connect((err) => {
@@ -19,5 +20,6 @@ connection.connect((err) => {
   }
   console.log('Connected to the database as ID ' + connection.threadId);
 });
+
 
 module.exports = connection;
