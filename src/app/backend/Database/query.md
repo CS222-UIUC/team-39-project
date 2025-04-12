@@ -5,41 +5,35 @@ CREATE TABLE Users (
     PassWord VARCHAR(256)
 );
 
-CREATE TABLE Recipes (
-    RecipeId INT PRIMARY KEY,
+CREATE TABLE RecipeBooks (
+    RecipeBookId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(256)
 );
 
-CREATE TABLE RecipeBooks (
-    RecipeBookId INT PRIMARY KEY,
-    Name VARCHAR(256)
+CREATE TABLE Recipes (
+    RecipeId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(256),
+    Ingredients TEXT,
+    Steps TEXT,
+    Category VARCHAR(256)
 );
 
 CREATE TABLE RecipesInRecipeBooks (
-    RecipeBookId INT,
-    RecipeId INT,
+    RecipeBookId INT NOT NULL,
+    RecipeId INT NOT NULL,
     PRIMARY KEY (RecipeBookId, RecipeId),
     FOREIGN KEY (RecipeBookId) REFERENCES RecipeBooks(RecipeBookId),
     FOREIGN KEY (RecipeId) REFERENCES Recipes(RecipeId)
-); 
-
-CREATE TABLE FavRecipes (
-    UserId VARCHAR(256),
-    RecipeId INT,
-    PRIMARY KEY (UserId, RecipeId),
-    FOREIGN KEY (UserId) REFERENCES Users(UserId),
-    FOREIGN KEY (RecipeId) REFERENCES Recipes(RecipeId)
-); 
+);
 
 CREATE TABLE FavRecipeBooks (
-    UserId VARCHAR(256),
-    RecipeBookId INT,
+    UserId VARCHAR(256) NOT NULL,
+    RecipeBookId INT NOT NULL,
     PRIMARY KEY (UserId, RecipeBookId),
-    FOREIGN KEY (UserId) REFERENCES Users(UserId),
     FOREIGN KEY (RecipeBookId) REFERENCES RecipeBooks(RecipeBookId)
 ); \\ 
 
- Add data for testing(remember we need to assign id in controller when inserting)\\\\ 
+Add data for testing(remember we need to assign id in controller when inserting)\\\\ 
 INSERT INTO Users (UserId, PassWord) 
 VALUES 
 ('user1', 'password1'), 
@@ -50,10 +44,6 @@ VALUES
 (1, 'Recipe1'), 
 (2, 'Chicken Curry');
 
-INSERT INTO FavRecipes (UserId, RecipeId) 
-VALUES 
-('user1', 1), 
-('user2', 2);
 
 Add recipebook table
 
