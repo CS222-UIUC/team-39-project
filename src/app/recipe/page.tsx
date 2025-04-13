@@ -5,8 +5,17 @@ import rehypeSanitize from "rehype-sanitize";
 import { getEnvVariable } from '@/app/lib/config';
 import { uploadImage } from '@/app/actions/upload';
 
-const example_recipe_name = "Grilled chicken as in Chipotle";
-const example_ingredients = `
+const example_recipe_name = "Beginner's Guide to FlavorBook";
+const example_ingredients = `Here is an example of how you can use this space for ingredients.
+
+You can use the button on the top to switch between preview and editing modes.
+Note that you need an empty line between paragraphs. 
+Single line breaks **will not work**.
+
+You can use the button on the *top right* to enter fullscreen mode.
+When you insert an image, patiently wait for a few seconds, then you will see something like \`![userphoto](some_sort_of_url_here.jpg)\`, and you will see the image once you switch back to preview mode.
+
+### Below is an example of ingredients for a recipe "Grilled Chicken as in Chipotle"
 * Chicken thigh: 2 lb
 * Oil: 4 tbsp
 * Adobo chipotle: 2 tbsp + 1.5 tsp
@@ -15,9 +24,11 @@ const example_ingredients = `
 * Dried oregano: 2 tsp
 * kosher salt: 2 tsp
 * Black pepper`;
-const example_steps = `
+
+const example_steps = `Here is an example of how you can use this space for steps.
+
 1. Mix everything together to marinate the chicken overnight.
-2. Preheat the grill on medium high. ![userphoto](https://www.helloimg.com/i/2025/04/06/67f17fb286570.jpg)
+2. Preheat the grill on medium high.
 2. Grill a whole piece of thigh for 10-15 min.
 3. Rest for 5min. ![userphoto](https://www.helloimg.com/i/2025/04/06/67f17fb35c2c8.jpg)
 4. Cut into smaller pieces.`;
@@ -48,7 +59,6 @@ const imageUploadCommand = {
         input.onchange = async () => {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-                console.log("Selected file:", file);
                 try {
                     const response = await uploadImage(file);
 
@@ -99,7 +109,6 @@ export default function RecipePage() {
     const [recipe_name, setName] = useState(example_recipe_name);
     const [category, setCategory] = useState(CATEGORIES[0]);
     const [preview, setPreview] = useState<"edit" | "preview">("preview");
-    const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
 
     const [value1, setValue1] = useState(example_ingredients); // value of editor 1
     const [value2, setValue2] = useState(example_steps); // value of editor 2
@@ -133,7 +142,7 @@ export default function RecipePage() {
         };
     }, []);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (containerRef.current && fixedElementsRef.current) {
                 const containerHeight = containerRef.current.offsetHeight;
@@ -241,6 +250,7 @@ export default function RecipePage() {
                     visibledragbar={"true"}
                     highlightEnable={false}
                     height={editorHeight}
+                    style={{ whiteSpace: 'white-space-collapse' }}
                 />
             </div>
             
@@ -269,6 +279,7 @@ export default function RecipePage() {
                     visibledragbar={"true"}
                     highlightEnable={false}
                     height={editorHeight}
+                    style={{ whiteSpace: 'normal' }}
                 />
             </div>
         </div>
