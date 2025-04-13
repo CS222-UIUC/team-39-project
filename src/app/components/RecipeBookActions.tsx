@@ -35,19 +35,19 @@ export default function RecipeBookActions({ initialRecipeBooks, username }: Reci
         setNewRecipeBookName('');
     };
 
-    const handleDeleteRecipeBook = async (recipeId: number) => {
+    const handleDeleteRecipeBook = async (recipeBookId: number) => {
         // const username = await getUsername();
         if (!username) {
             console.error('Username not found');
             return;
         }
-        const recipeToDelete = recipeBooks.find(recipe => recipe.id === recipeId);
+        const recipeToDelete = recipeBooks.find(recipe => recipe.id === recipeBookId);
         if (!recipeToDelete) {
             console.error('Recipe not found');
             return;
         }
         await deleteRecipeBook(username, recipeToDelete.name);
-        setRecipeBooks(recipeBooks.filter(recipe => recipe.id !== recipeId));
+        setRecipeBooks(recipeBooks.filter(recipe => recipe.id !== recipeBookId));
     };
 
     return (
