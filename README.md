@@ -21,74 +21,85 @@
 
 ## Backend Signatures
 ```
-======login page======
-http://localhost:5000/api/auth/login
-- input: username, password
+======login page======(Done)
+http://localhost:2333/api/login
+- type: post
+- input: name, password
 - return: response.ok == True if successful
 
 ======signup page======
-http://localhost:5000/api/auth/signup
-- input: username, password
+http://localhost:2333/api/signup
+- type: post
+- input: name, password
 - return: response.ok == True if successful
 
-======user page======
-http://localhost:5000/api/user/invite_read
+======user page======(To do)
+http://localhost:2333/api/user/invite_read
+- type: post
 - input: username, invited_username, book_name
 - return: response.ok == True if successful
     
-http://localhost:5000/api/user/invite_coedit
+http://localhost:2333/api/user/invite_coedit
+- type: post
 - input: username, invited_username, book_name
 - return: response.ok == True if successful
 
 =====main page======
-http://localhost:5000/api/user/get_book_list
+http://localhost:2333/api/recipebook/
+- type: get
 - input: username
-- return: list of book names
+- return: list of all recipe books
 
-http://localhost:5000/api/user/create_book
+http://localhost:2333/api/recipebook/
+- type: post
 - input: username, book_name
 - return: response.ok == True if successful
 
-http://localhost:5000/api/user/delete_book
+http://localhost:2333/api/recipebook/
+- type: delete
 - input: username, book_name
 - return: response.ok == True if successful
 
-http://localhost:5000/api/user/rename_book
+http://localhost:2333/api/recipebook/
+- type: patch
 - input: username, book_name, new_book_name
 - return: response.ok == True if successful
 
 ======recipe book page======
-http://localhost:5000/api/recipebook/get_recipe_list
+Note: Recipe must be inside some recipe book, so we need to create a new recipe book when new user signed up.
+http://localhost:2333/api/recipe/
+- type：get
 - input: username, book_name
-- return: list of recipe names
+- return: list of recipes in the given recipe book
 
-http://localhost:5000/api/recipebook/create_recipe
+http://localhost:2333/api/recipe/
+- type: post
+- input: username, book_name, recipe_name, recipe_Ingredients, recipe_Steps, recipe_Category
+- return: response.ok == True if successfully add a new recipe to the given recipe book.
+
+http://localhost:2333/api/recipe/
+- type: delete
 - input: username, book_name, recipe_name
-- return: response.ok == True if successful
+- return: response.ok == True if successfully delete a recipe from the given recipe book
 
-http://localhost:5000/api/recipebook/delete_recipe
-- input: username, book_name, recipe_name
-- return: response.ok == True if successful
-
-http://localhost:5000/api/recipebook/rename_recipe
-- input: username, book_name, recipe_name, new_recipe_name
-- return: response.ok == True if successful
 
 =====recipe editing page======
-http://localhost:5000/api/recipe/get_recipe
+http://localhost:2333/api/recipe/get_one_recipe
+- type: get
 - input: username, book_name, recipe_name
-- return: recipe_category, recipe_ingredients (markdown), recipe_steps (markdown)
+- return: recipe_name, recipe_category, recipe_ingredients (markdown), recipe_steps (markdown)
 
-http://localhost:5000/api/recipe/update_recipe
+http://localhost:2333/api/recipe/update_recipe
+-type：update
 - input: username, book_name, recipe_name, recipe_category, recipe_ingredients, recipe_steps
 - return: response.ok == True if successful
 
-http://localhost:5000/api/recipe/upload_photo
+http://localhost:2333/api/recipe/upload_photo(Done by Zory in frontend! Thank you, Zory!)
 - input: username, book_name, recipe_name, photo
 - return: photo_url
 
 =====piazza page======
-http://localhost:5000/api/piazza/get_recipe_list
+http://localhost:2333/api/recipe/get_recipe_list
 - return: list of (recipe owner usernames, recipe names)
 
 ```
@@ -96,6 +107,18 @@ http://localhost:5000/api/piazza/get_recipe_list
 ```
 cd src/app/backend
 npm install express mysql dotenv nodemon cors bcrypt jsonwebtoken
+```
+### Run backend
+```
+cd src/app/backend
+npm run dev
+```
+If the backend is working, it will return a page saying "Backend is working!"
+
+# Run backend
+```
+cd src/app/backend
+npm run dev
 ```
 
 # Next.js

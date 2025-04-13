@@ -9,7 +9,7 @@ export async function Post({ post }) {
     <ul>
       {posts.map((post) => (
         <li key={post.slug}>
-          <Link href={`/book/${post.slug}`}>{post.title}</Link>
+          <Link href={`/${post.slug}`}>{post.title}</Link>
         </li>
       ))}
     </ul>
