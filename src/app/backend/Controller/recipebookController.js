@@ -3,7 +3,7 @@ const connection = require('../Database/connection');
 // Get all recipeBooks
 const getAllRecipeBooks = (req, res) => {
   console.log('getAllRecipeBooks called');
-  const { username } = req.body; 
+  const { username } = req.query; 
   if (!username) {
     return res.status(400).json({ error: 'Username is required' });
   }
@@ -99,9 +99,18 @@ const updateRecipeBook = (req, res) => {
     console.log('updateRecipeBook called');
     const { username, book_name, new_book_name } = req.body;
   
-    if (!username || !book_name || !new_book_name) {
-      return res.status(400).json({ error: "Missing required fields" });
+    if (!username) {
+      return res.status(400).json({ error: "Username is required" });
     }
+    if (!book_name) {
+      return res.status(400).json({ error: "Book name is required" });
+    }
+    if (!new_book_name) {
+      return res.status(400).json({ error: "New book name is required" });
+    }
+    // if (!username || !book_name || !new_book_name) {
+    //   return res.status(400).json({ error: "Missing required fields" });
+    // }
   
     const verifyQuery = `
       SELECT rb.RecipeBookId
