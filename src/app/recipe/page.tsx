@@ -4,7 +4,9 @@ import MDEditor, { commands } from '@uiw/react-md-editor'; // https://github.com
 import rehypeSanitize from "rehype-sanitize";
 import { getEnvVariable } from '@/app/lib/config';
 import { uploadImage } from '@/app/actions/upload';
+import _jsxRuntime from "react/jsx-runtime";
 
+const test: JSX.Element = <div>Hello</div>;
 const example_recipe_name = "Beginner's Guide to FlavorBook";
 const example_ingredients = `Here is an example of how you can use this space for ingredients.
 
@@ -30,10 +32,9 @@ const example_steps = `Here is an example of how you can use this space for step
 1. Mix everything together to marinate the chicken overnight.
 2. Preheat the grill on medium high.
 2. Grill a whole piece of thigh for 10-15 min.
-3. Rest for 5min. ![userphoto](https://www.helloimg.com/i/2025/04/06/67f17fb35c2c8.jpg)
+3. Rest for 5min.
 4. Cut into smaller pieces.`;
 
-var _jsxRuntime = require("react/jsx-runtime");
 const imageUploadCommand = {
     name: 'uploadImage',
     keyCommand: 'uploadImage',

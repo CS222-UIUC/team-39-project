@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+import mysql from 'mysql';
 
 //mysql -u admin -p -h cs222.cxcwkyiweck5.us-east-2.rds.amazonaws.com -P 3306
 const connection = mysql.createConnection({

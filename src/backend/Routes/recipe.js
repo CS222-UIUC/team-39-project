@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express'
+import recipeController from '../Controller/recipeController'
 const router = express.Router();
-const recipeController = require('../Controller/recipeController');
 
 
 // // Get all recipes

@@ -1,4 +1,4 @@
-const connection = require('../Database/connection');
+import connection from '../Database/connection';
 /*
 // Get all recipes
 const getAllRecipes = (req, res) => {
@@ -184,7 +184,7 @@ const updateRecipe = (req, res) => {
         WHERE RecipeId = ?
       `;
 
-      connection.query(updateQuery, [recipe_category, recipe_ingredients, recipe_steps, recipeId], (updateErr, result) => {
+      connection.query(updateQuery, [recipe_category, recipe_ingredients, recipe_steps, recipeId], (updateErr, _) => {
         if (updateErr) return res.status(500).json({ error: updateErr.message });
 
         res.json({ ok: true });

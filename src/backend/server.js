@@ -1,20 +1,21 @@
-const express = require('express');
-require('dotenv').config();
+import express from 'express'
+import dotenv from 'dotenv'
+dotenv.config();
 
 const app = express();
 app.use(express.json());
 
-const cors = require('cors');
+import cors from 'cors'
 app.use(cors());
 
 const port = process.env.PORT;
 
-const connection = require('./Database/connection');
+//const connection = require('./Database/connection');
 
 // Import routes
-const recipeRoute = require('./Routes/recipe');
-const userRoute = require('./Routes/user');
-const recipebookRoute = require('./Routes/recipebook');
+import recipeRoute from './Routes/recipe'
+import userRoute from './Routes/user'
+import recipebookRoute from './Routes/recipebook'
 
 app.use('/api/recipe', recipeRoute);
 app.use('/api/user', userRoute);

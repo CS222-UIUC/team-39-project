@@ -1,7 +1,8 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const db = require('../Database/connection'); 
-require('dotenv').config();
+import db from '../Database/connection';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const createToken = (UserId) => {
   return jwt.sign({ UserId }, process.env.SECRET, { expiresIn: '3d' });
@@ -54,7 +55,7 @@ const signupUser = async (req, res) => {
             }
 
             // beginenr sample recipe content
-            `${username}'s Beginner Recipe Book`
+            //`${username}'s Beginner Recipe Book`
             const example_recipe_name = `${username}'s Beginner's Guide to FlavorBook`
             const example_ingredients = `### Instructions
 You can use the button on the top to switch between preview and editing modes.

@@ -1,4 +1,4 @@
-const connection = require('../Database/connection');
+import connection from '../Database/connection';
 
 // Get all recipeBooks
 const getAllRecipeBooks = (req, res) => {
