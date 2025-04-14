@@ -3,12 +3,8 @@
 // this is the page where we have our user's recipe book list
 // we will need to fetch the user's recipe book list from the server
 // and display it here
-import { UncontrolledTreeEnvironment, Tree, StaticTreeDataProvider } from "react-complex-tree";
-import { useRouter } from "next/navigation";
 import { useState } from 'react'
 import Link from 'next/link'
-import { Post } from '@/app/ui/post'
-import { getPosts } from '@/app/lib/posts'
 
 
 export default function RecipeBookList() {

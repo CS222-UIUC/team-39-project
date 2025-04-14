@@ -6,7 +6,6 @@ import { getEnvVariable } from '@/app/lib/config';
 import { uploadImage } from '@/app/actions/upload';
 import _jsxRuntime from "react/jsx-runtime";
 
-const test: JSX.Element = <div>Hello</div>;
 const example_recipe_name = "Beginner's Guide to FlavorBook";
 const example_ingredients = `Here is an example of how you can use this space for ingredients.
 
@@ -237,7 +236,7 @@ export default function RecipePage() {
             <div style={{ flex: 1, marginBottom: "0px", width: "100%" }}>
                 <MDEditor
                     value={value1}
-                    onChange={setValue1}
+                    onChange={(value) => setValue1(value || '')} // Ensure 'value' is always a string
                     previewOptions={{
                         rehypePlugins: [[rehypeSanitize]],
                     }}
@@ -248,7 +247,7 @@ export default function RecipePage() {
                     commands={editorCommands}
                     extraCommands={editorExtraCommands}
                     //hideToolbar={preview === "preview"}
-                    visibledragbar={"true"}
+                    visibleDragbar={false}
                     highlightEnable={false}
                     height={editorHeight}
                     style={{ whiteSpace: 'white-space-collapse' }}
@@ -266,7 +265,7 @@ export default function RecipePage() {
             <div style={{ flex: 1, marginBottom: "0px", width: "100%" }}>
                 <MDEditor
                     value={value2}
-                    onChange={setValue2}
+                    onChange={(value) => setValue2(value || '')}
                     previewOptions={{
                         rehypePlugins: [[rehypeSanitize]],
                     }}
@@ -277,7 +276,7 @@ export default function RecipePage() {
                     commands={editorCommands}
                     extraCommands={editorExtraCommands}
                     //hideToolbar={preview === "preview"}
-                    visibledragbar={"true"}
+                    visibleDragbar={false}
                     highlightEnable={false}
                     height={editorHeight}
                     style={{ whiteSpace: 'normal' }}

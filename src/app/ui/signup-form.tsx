@@ -9,8 +9,13 @@ export function SignupForm() {
         <form action={async (formData) => {
             setError(null); // Clear previous errors
             const result = await signup(formData);
-            if (result?.errors?.general) {
-                setError(result.errors.general);
+            if (result?.errors) {
+                if ('general' in result.errors) {
+                    setError(result.errors.general);
+                } else {
+                    // Handle other error cases, if necessary
+                    setError('An unknown error occurred.');
+                }
             }
         }}>
             <div>

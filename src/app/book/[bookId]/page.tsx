@@ -7,14 +7,19 @@ import { decrypt } from '@/app/lib/session';
 import ClientBookPage from './ClientBookPage';
 import { redirect } from 'next/navigation';
 
-export default async function RecipeBookPageWrapper({ params }: { params: { bookId: string } }) {
-  const bookId = params.bookId;
-  const session = (await cookies()).get('session')?.value;
-  const payload = await decrypt(session);
+type PageProps = {
+    params: Promise<{ bookId: string }>; // Ensure `params` is awaited
+}
 
-  if (!session || !payload?.username) {
-    redirect('/login'); // Or show a fallback error message
-  }
-
-  return <ClientBookPage bookId={bookId} username={payload.username} />;
+export default async function RecipeBookPageWrapper(props: PageProps) 
+{
+    const { bookId } = await props.params; // https://nextjs.org/docs/messages/sync-dynamic-apis
+    const session = (await cookies()).get('session')?.value;
+    const payload = await decrypt(session);
+  
+    if (!session || !payload?.username) {
+      redirect('/login'); // Or show a fallback error message
+    }
+  
+    return <ClientBookPage bookId={bookId} username={payload.username} />;
 }
