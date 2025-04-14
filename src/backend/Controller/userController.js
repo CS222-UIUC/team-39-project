@@ -1,4 +1,4 @@
-import db from '../Database/connection';
+import db from '../Database/connection.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -154,4 +154,4 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { signupUser, loginUser };
+export { signupUser, loginUser };

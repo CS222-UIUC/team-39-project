@@ -8,6 +8,8 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
+    "noImplicitAny": false,
+    "ignoreDeprecations": "5.0",
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -38,8 +40,8 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
     ".next/types/**/*.ts"
   ],
   "exclude": [

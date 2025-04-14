@@ -1,6 +1,6 @@
 import express from 'express'
 const router = express.Router();
-import recipebookController from '../Controller/recipebookController'
+import * as recipebookController from '../Controller/recipebookController.js';
 
 
 // Get all recipebooks
@@ -15,4 +15,4 @@ router.delete('/', recipebookController.deleteRecipeBook);
 // rename a recipe book
 router.patch('/', recipebookController.updateRecipeBook);
 
-module.exports = router;
+export default router;

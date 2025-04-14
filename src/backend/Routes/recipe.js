@@ -1,5 +1,5 @@
 import express from 'express'
-import recipeController from '../Controller/recipeController'
+import * as recipeController from '../Controller/recipeController.js';
 const router = express.Router();
 
 
@@ -28,4 +28,4 @@ router.patch('/update_recipe', recipeController.updateRecipe);
 // Get the list of all recipes
 router.get('/get_recipe_list', recipeController.getRecipeList);
 
-module.exports = router;
+export default router;

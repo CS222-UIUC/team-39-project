@@ -1,4 +1,4 @@
-import connection from '../Database/connection';
+import connection from '../Database/connection.js';
 /*
 // Get all recipes
 const getAllRecipes = (req, res) => {
@@ -209,12 +209,5 @@ const getRecipeList = (req, res) => {
   });
 };
 
-  module.exports = {
-    // getAllRecipes,
-    // getRecipeById,
-    // postRecipe,
-    // deleteRecipe,
-    updateRecipe,
-    getOneRecipe,
-    getRecipeList,
-  };
+
+export { updateRecipe, getOneRecipe, getRecipeList };

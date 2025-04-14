@@ -13,10 +13,11 @@ const port = process.env.PORT;
 //const connection = require('./Database/connection');
 
 // Import routes
-import recipeRoute from './Routes/recipe'
-import userRoute from './Routes/user'
-import recipebookRoute from './Routes/recipebook'
+import recipeRoute from './Routes/recipe.js'
+import userRoute from './Routes/user.js'
+import recipebookRoute from './Routes/recipebook.js'
 
+app.use(express.json());
 app.use('/api/recipe', recipeRoute);
 app.use('/api/user', userRoute);
 app.use('/api/recipebook', recipebookRoute);
