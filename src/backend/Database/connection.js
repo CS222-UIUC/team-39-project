@@ -1,4 +1,11 @@
 import mysql from 'mysql';
+import dotenv from 'dotenv';
+
+// Load .env file locally, Render uses its own env vars
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config();
+    console.log('dev mode')
+}
 
 //mysql -u admin -p -h cs222.cxcwkyiweck5.us-east-2.rds.amazonaws.com -P 3306
 const connection = mysql.createConnection({
