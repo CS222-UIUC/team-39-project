@@ -1,7 +1,7 @@
 // TODO: Verify the correct way for connecting with backend
-const express = require('express');
+import express from 'express';
+import db from '../Database/connection';
 const router = express.Router();
-const db = require('../Database/connection');
 
 // PUT /api/recipebook/:id
 router.put('/api/recipebook/:id', async (req, res) => {

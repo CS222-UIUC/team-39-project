@@ -5,9 +5,10 @@
 ### NextJS ###
 # dependencies
 /node_modules
-/src/app/backend/node_modules
+/src/backend/node_modules
 /.pnp
 .pnp.js
+/src/backend/.env
 
 # testing
 /coverage

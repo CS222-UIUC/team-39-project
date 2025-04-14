@@ -29,7 +29,7 @@ export default function RecipeBookList() {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">User's Recipe Book List</h2>
+      <h2 className="text-2xl font-bold mb-4">User&apos;s Recipe Book List</h2>
       <ul>
         {books.map((book) => (
           <li key={book.id} className="mb-2 flex justify-between">

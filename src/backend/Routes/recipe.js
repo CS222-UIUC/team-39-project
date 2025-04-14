@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express'
+import * as recipeController from '../Controller/recipeController.js';
 const router = express.Router();
-const recipeController = require('../Controller/recipeController');
 
 
 // // Get all recipes
@@ -28,4 +28,4 @@ router.patch('/update_recipe', recipeController.updateRecipe);
 // Get the list of all recipes
 router.get('/get_recipe_list', recipeController.getRecipeList);
 
-module.exports = router;
+export default router;
