@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { addRecipeBook, deleteRecipeBook } from '@/app/lib/recipes';
+import { getUsername } from '../actions/auth';
 
 // Define a type for Recipe
 type Recipe = {
@@ -14,22 +15,39 @@ type Recipe = {
 // Define props for RecipeBookActions component
 interface RecipeBookActionsProps {
     initialRecipeBooks: Recipe[];
+    username: string;
 }
 
-export default function RecipeBookActions({ initialRecipeBooks }: RecipeBookActionsProps) {
+
+export default function RecipeBookActions({ initialRecipeBooks, username }: RecipeBookActionsProps) {
     const [recipeBooks, setRecipeBooks] = useState<Recipe[]>(initialRecipeBooks);
     const [newRecipeBookName, setNewRecipeBookName] = useState('');
 
     const handleAddRecipeBook = async () => {
         if (!newRecipeBookName.trim()) return;
-        const newRecipe = await addRecipeBook(newRecipeBookName);
+        // const username = await getUsername();
+        if (!username) {
+            console.error('Username not found');
+            return;
+        }
+        const newRecipe = await addRecipeBook(username, newRecipeBookName);
         setRecipeBooks([...recipeBooks, newRecipe]);
         setNewRecipeBookName('');
     };
 
-    const handleDeleteRecipeBook = async (recipeId: number) => {
-        await deleteRecipeBook(recipeId);
-        setRecipeBooks(recipeBooks.filter(recipe => recipe.id !== recipeId));
+    const handleDeleteRecipeBook = async (recipeBookId: number) => {
+        // const username = await getUsername();
+        if (!username) {
+            console.error('Username not found');
+            return;
+        }
+        const recipeToDelete = recipeBooks.find(recipe => recipe.id === recipeBookId);
+        if (!recipeToDelete) {
+            console.error('Recipe not found');
+            return;
+        }
+        await deleteRecipeBook(username, recipeToDelete.name);
+        setRecipeBooks(recipeBooks.filter(recipe => recipe.id !== recipeBookId));
     };
 
     return (

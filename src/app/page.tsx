@@ -13,12 +13,15 @@ export default async function Page() {
     if (!session || !payload) {
         redirect('/login')
     }
-    const recipeBooks = await getRecipeBookList();
+    console.log('Fetching books for', payload.username);
+    const recipeBooks = await getRecipeBookList(payload.username);
 
     return (
         <div>
             <h1>Welcome back, {payload.username}!</h1>
-            <RecipeBookActions initialRecipeBooks={recipeBooks} />
+            <RecipeBookActions
+             initialRecipeBooks={recipeBooks} 
+             username={payload.username}/>
             <form action={logout}>
                 <button type="submit" className="bg-red-500 text-white py-2 px-4 rounded">
                     Logout
