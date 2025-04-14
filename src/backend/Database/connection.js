@@ -2,11 +2,11 @@ import mysql from 'mysql';
 
 //mysql -u admin -p -h cs222.cxcwkyiweck5.us-east-2.rds.amazonaws.com -P 3306
 const connection = mysql.createConnection({
-  host: 'cs222.cxcwkyiweck5.us-east-2.rds.amazonaws.com', 
-  user: 'admin',
-  password: 'cs222database',
-  database: 'db',
-  port: 3306
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
 });
 
 // For now, the database can only be accessed from the local machine,

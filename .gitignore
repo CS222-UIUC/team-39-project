@@ -8,6 +8,7 @@
 /src/backend/node_modules
 /.pnp
 .pnp.js
+/src/backend/.env
 
 # testing
 /coverage
