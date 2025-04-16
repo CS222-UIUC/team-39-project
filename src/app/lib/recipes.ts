@@ -1,15 +1,8 @@
-// TODO: replace recipebooks with @api calls
-// "user server"
-import { getEnvVariable } from "./config";
-import { getUsername } from "../actions/auth";
-// const RECIPE_BOOK_API = getEnvVariable('NEXT_PUBLIC_RECIPEBOOK_API');
-// const RECIPE_BOOK_API = getEnvVariable('NEXT_PUBLIC_RECIPEBOOK_API');
-
-const TEST_API = 'http://localhost:2333/api/recipebook';
+const RECIPE_BOOK_API = process.env.NEXT_PUBLIC_RECIPEBOOK_API!;
 
 // get all recipe books
 export async function getRecipeBookList(username: string) {
-  const res = await fetch(`${TEST_API}/?username=${username}`);
+  const res = await fetch(`${RECIPE_BOOK_API}/?username=${username}`);
   if (!res.ok) throw new Error('Failed to fetch recipe books');
   const data = await res.json();
 
@@ -22,7 +15,7 @@ export async function getRecipeBookList(username: string) {
 
 // Add a new recipe book
 export async function addRecipeBook(username: string, book_name: string) {
-  const res = await fetch(TEST_API, {
+  const res = await fetch(RECIPE_BOOK_API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, book_name }),
@@ -40,7 +33,7 @@ export async function addRecipeBook(username: string, book_name: string) {
 
 // Delete a recipe book by ID
 export async function deleteRecipeBook(username: string, book_name: string) {
-  const res = await fetch(TEST_API, {
+  const res = await fetch(RECIPE_BOOK_API, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, book_name: book_name }),
@@ -51,7 +44,7 @@ export async function deleteRecipeBook(username: string, book_name: string) {
 
 export async function updateRecipeBook(username: string, book_name: string, new_book_name: string) {
   const body = { username, book_name: book_name, new_book_name: new_book_name };
-  const res = await fetch(TEST_API, {
+  const res = await fetch(RECIPE_BOOK_API, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
