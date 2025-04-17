@@ -96,7 +96,7 @@ const editorCommands = [
 const editorExtraCommands = [commands.fullscreen];
 
 //const CATEGORIES = getEnvVariable<string[]>('NEXT_PUBLIC_CATEGORIES');
-const CATEGORIES = ["Uncategorized", "Appetizer", "Main Course", "Vegetables", "Desserts", "Snacks", "Drinks"]
+const CATEGORIES = ["Uncategorized", "Appetizers", "Main Course", "Vegetables", "Desserts", "Snacks", "Drinks", "Soups", "Carbs", "Half-prepared", "Others"]
 
 const calculateMarginAdjustedHeight = (el: HTMLElement): number => {
     const style = window.getComputedStyle(el);
