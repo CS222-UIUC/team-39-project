@@ -40,19 +40,17 @@ const signupUser = async (req, res) => {
         const token = createToken(username);
         const defaultBookName = `${username}'s Beginner Recipe Book`;
         // Create a default recipe book for the user
-        db.query('INSERT INTO RecipeBooks (Name) VALUES (?)', [defaultBookName], (bookErr, bookResult) => {
-          if (bookErr) {
-            console.error('Error creating default recipe book:', bookErr);
-            return res.status(500).json({ error: bookErr.message });
-          }
-
-          const recipeBookId = bookResult.insertId;
-
-          db.query('INSERT INTO FavRecipeBooks (UserId, RecipeBookId) VALUES (?, ?)', [username, recipeBookId], (favErr) => {
-            if (favErr) {
-              console.error('Error adding to FavRecipeBooks:', favErr);
-              return res.status(500).json({ error: favErr.message });
+        db.query(
+          'INSERT INTO RecipeBooks (Name, OwnerId) VALUES (?, ?)',
+          [defaultBookName, username],
+          (bookErr, bookResult) => {
+            if (bookErr) {
+              console.error('Error creating default recipe book:', bookErr);
+              return res.status(500).json({ error: bookErr.message });
             }
+  
+            const recipeBookId = bookResult.insertId;
+
 
             // beginenr sample recipe content
             //`${username}'s Beginner Recipe Book`
@@ -119,7 +117,7 @@ Here is an example of how you can use this space for ingredients.
             );
           });
         });
-      });
+
     });
   } catch (err) {
     console.error('Unexpected error during signup:', err);

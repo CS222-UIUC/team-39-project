@@ -1,4 +1,5 @@
 import connection from '../Database/connection.js';
+
 /*
 // Get all recipes
 const getAllRecipes = (req, res) => {
@@ -57,24 +58,54 @@ const getAllRecipes = (req, res) => {
             res.status(201).json({ msg: "Recipe added", recipeId });
         });
     });
+}; */
+
+const postRecipe = (req, res) => {
+  const { book_id, recipe_name } = req.body;
+  console.log('postRecipe called', book_id, recipe_name);
+  if (!book_id || !recipe_name) {
+    return res.status(400).json({ error: 'Missing field' });
+  }
+
+  connection.query(
+    'INSERT INTO Recipes (Name, Category) VALUES (?, ?)',
+    [recipe_name, 'Uncategorized'],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      const newRecipeId = result.insertId;
+
+      connection.query(
+        'INSERT INTO RecipesInRecipeBooks (RecipeId, RecipeBookId) VALUES (?, ?)',
+        [newRecipeId, book_id],
+        (linkErr) => {
+          if (linkErr) return res.status(500).json({ error: linkErr.message });
+          return res.status(200).json({ ok: true });
+        }
+      );
+    }
+  );
 };
+
   
-  // Delete a recipe
-  const deleteRecipe = (req, res) => {
-    console.log('deleteRecipe called');
-    const { id } = req.params;
-    const query = "DELETE FROM Recipes WHERE RecipeId = ?";
-    connection.query(query, [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: err });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ msg: "Recipe not found" });
-        }
-        res.json({ msg: `Recipe with id ${id} deleted` });
-    });
-  };
-  
+const deleteRecipe = (req, res) => {
+  const { recipe_id } = req.body;
+
+  if (!recipe_id) {
+    return res.status(400).json({ error: 'Missing recipe_id' });
+  }
+
+  connection.query('DELETE FROM Recipes WHERE RecipeId = ?', [recipe_id], (err) => {
+    if (err) {
+      console.error('Error deleting recipe:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.status(200).json({ ok: true });
+  });
+};
+
+  /*
   // Update a recipe
   // TODO
   const updateRecipe = (req, res) => {
@@ -84,130 +115,46 @@ const getAllRecipes = (req, res) => {
   */
 
   const getOneRecipe = (req, res) => {
-    const { username, book_name, recipe_name } = req.body;
+    const { recipe_id } = req.query;
+    if (!recipe_id) return res.status(400).json({ error: 'Missing recipe_id' });
   
-    if (!username || !book_name || !recipe_name) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
+    connection.query('SELECT * FROM Recipes WHERE RecipeId = ?', [recipe_id], (err, results) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (results.length === 0) return res.status(404).json({ error: 'Recipe not found' });
   
-    const getBookIdQuery = `
-      SELECT rb.RecipeBookId
-      FROM RecipeBooks rb
-      JOIN FavRecipeBooks frb ON rb.RecipeBookId = frb.RecipeBookId
-      WHERE frb.UserId = ? AND rb.Name = ?
-    `;
-    connection.query(getBookIdQuery, [username, book_name], (bookErr, bookResults) => {
-      if (bookErr) return res.status(500).json({ error: bookErr.message });
-      if (bookResults.length === 0) {
-        return res.status(404).json({ error: 'Recipe book not found for user' });
-      }
-      const recipeBookId = bookResults[0].RecipeBookId;
-
-      const getRecipeIdQuery = `
-        SELECT r.RecipeId
-        FROM Recipes r
-        JOIN RecipesInRecipeBooks rirb ON r.RecipeId = rirb.RecipeId
-        WHERE rirb.RecipeBookId = ? AND r.Name = ?
-      `;
-  
-      connection.query(getRecipeIdQuery, [recipeBookId, recipe_name], (recipeIdErr, recipeIdResults) => {
-        if (recipeIdErr) return res.status(500).json({ error: recipeIdErr.message });
-        if (recipeIdResults.length === 0) {
-          return res.status(404).json({ error: 'Recipe not found in this book' });
-        }
-  
-        const recipeId = recipeIdResults[0].RecipeId;
-
-        const getRecipeQuery = `
-          SELECT Name AS recipe_name, Category AS recipe_category, Ingredients AS recipe_ingredients, Steps AS recipe_steps
-          FROM Recipes
-          WHERE RecipeId = ?
-        `;
-  
-        connection.query(getRecipeQuery, [recipeId], (finalErr, recipeResults) => {
-          if (finalErr) return res.status(500).json({ error: finalErr.message });
-  
-          const recipe = recipeResults[0];
-          res.json({
-            recipe_name: recipe.recipe_name,
-            recipe_category: recipe.recipe_category,
-            recipe_ingredients: recipe.recipe_ingredients,
-            recipe_steps: recipe.recipe_steps
-          });
-        });
+      const recipe = results[0];
+      res.status(200).json({
+        recipe_name: recipe.Name,
+        recipe_category: recipe.Category,
+        recipe_ingredients: recipe.Ingredients,
+        recipe_steps: recipe.Steps
       });
     });
   };
-
-
-
+  
 const updateRecipe = (req, res) => {
-  const { username, book_name, recipe_name, recipe_category, recipe_ingredients, recipe_steps } = req.body;
-
-  if (!username || !book_name || !recipe_name || !recipe_category || !recipe_ingredients || !recipe_steps) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  const getBookIdQuery = `
-    SELECT rb.RecipeBookId
-    FROM RecipeBooks rb
-    JOIN FavRecipeBooks favb ON rb.RecipeBookId = favb.RecipeBookId
-    WHERE favb.UserId = ? AND rb.Name = ?
-  `;
-
-  connection.query(getBookIdQuery, [username, book_name], (bookErr, bookResults) => {
-    if (bookErr) return res.status(500).json({ error: bookErr.message });
-    if (bookResults.length === 0) {
-      return res.status(404).json({ error: 'Recipe book not found for user' });
+    const { recipe_id, recipe_name, recipe_category, recipe_ingredients, recipe_steps } = req.body;
+    if (!recipe_id || !recipe_name || !recipe_category || !recipe_ingredients || !recipe_steps) {
+      return res.status(400).json({ error: 'Missing fields' });
     }
 
-    const recipeBookId = bookResults[0].RecipeBookId;
-
-    const getRecipeIdQuery = `
-      SELECT r.RecipeId
-      FROM Recipes r
-      JOIN RecipesInRecipeBooks rirb ON r.RecipeId = rirb.RecipeId
-      WHERE rirb.RecipeBookId = ? AND r.Name = ?
+    const updateQuery = `
+      UPDATE Recipes
+      SET Name = ?, Category = ?, Ingredients = ?, Steps = ?
+      WHERE RecipeId = ?
     `;
-
-    connection.query(getRecipeIdQuery, [recipeBookId, recipe_name], (recipeIdErr, recipeIdResults) => {
-      if (recipeIdErr) return res.status(500).json({ error: recipeIdErr.message });
-      if (recipeIdResults.length === 0) {
-        return res.status(404).json({ error: 'Recipe not found in this book' });
-      }
-
-      const recipeId = recipeIdResults[0].RecipeId;
-
-      const updateQuery = `
-        UPDATE Recipes
-        SET Category = ?, Ingredients = ?, Steps = ?
-        WHERE RecipeId = ?
-      `;
-
-      connection.query(updateQuery, [recipe_category, recipe_ingredients, recipe_steps, recipeId], (updateErr, _) => {
-        if (updateErr) return res.status(500).json({ error: updateErr.message });
-
-        res.json({ ok: true });
-      });
+    connection.query(updateQuery, [recipe_name, recipe_category, recipe_ingredients, recipe_steps, recipe_id], (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.status(200).json({ ok: true });
     });
-  });
-};
+  };
+  
 
 
-const getRecipeList = (req, res) => {
-  const sql = `
-    SELECT frb.UserId AS username, r.Name AS recipe_name
-    FROM FavRecipeBooks frb
-    JOIN RecipesInRecipeBooks rirb ON frb.RecipeBookId = rirb.RecipeBookId
-    JOIN Recipes r ON rirb.RecipeId = r.RecipeId
-    ORDER BY frb.UserId ASC, r.Name ASC
-  `;
-
-  connection.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(results);
-  });
-};
-
-
-export { updateRecipe, getOneRecipe, getRecipeList };
+export {
+   updateRecipe, 
+   getOneRecipe, 
+   //getRecipeList,
+   deleteRecipe,
+   postRecipe
+  };
