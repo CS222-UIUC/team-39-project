@@ -9,14 +9,14 @@ const router = express.Router();
 // // Get a single recipe
 // router.get('/:id', recipeController.getRecipeById);
 
-// // Post a recipe
-// router.post('/', recipeController.postRecipe);
+// Post a recipe
+router.post('/', recipeController.postRecipe);
 
-// // Delete a recipe
-// router.delete('/:id', recipeController.deleteRecipe);
+// Delete a recipe
+router.delete('/', recipeController.deleteRecipe);
 
 // // Update a recipe
-// router.patch('/:id', recipeController.updateRecipe);
+// router.patch('/', recipeController.updateRecipe);
 
 
 // Get a single recipe by username, book name, and recipe name
@@ -26,6 +26,6 @@ router.get('/get_one_recipe', recipeController.getOneRecipe);
 router.patch('/update_recipe', recipeController.updateRecipe);
 
 // Get the list of all recipes
-router.get('/get_recipe_list', recipeController.getRecipeList);
+//router.get('/get_recipe_list', recipeController.getRecipeList);
 
 export default router;
