@@ -26,7 +26,14 @@ CREATE TABLE RecipesInRecipeBooks (
     FOREIGN KEY (RecipeId) REFERENCES Recipes(RecipeId)
 );
 
-CREATE TABLE FavRecipeBooks (
+CREATE TABLE ReadOnly (
+    UserId VARCHAR(256) NOT NULL,
+    RecipeBookId INT NOT NULL,
+    PRIMARY KEY (UserId, RecipeBookId),
+    FOREIGN KEY (RecipeBookId) REFERENCES RecipeBooks(RecipeBookId)
+);
+
+CREATE TABLE Coedit (
     UserId VARCHAR(256) NOT NULL,
     RecipeBookId INT NOT NULL,
     PRIMARY KEY (UserId, RecipeBookId),
