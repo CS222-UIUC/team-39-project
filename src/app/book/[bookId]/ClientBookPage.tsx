@@ -7,11 +7,12 @@ import { updateRecipeBook } from '@/app/lib/recipes';
 
 interface Props {
   username: string;
-  bookId: string;
+  bookId: number;
 }
 
 export default function ClientBookPage({ username, bookId }: Props) {
     const router = useRouter();
+    // todo: decode the name of the book by calling getRecipeBook
     const readableBookName = decodeURIComponent(bookId.replaceAll('-', ' ')).trim();
   
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -39,7 +40,7 @@ export default function ClientBookPage({ username, bookId }: Props) {
           return;
         }
   
-        await updateRecipeBook(username, readableBookName, editedBookName.trim());
+        await updateRecipeBook(bookId, editedBookName.trim());
         setIsEditingTitle(false);
         router.push(`/book/${editedBookName.replaceAll(' ', '-')}`);
       } catch (err) {
@@ -87,7 +88,7 @@ export default function ClientBookPage({ username, bookId }: Props) {
           {foods.map((food) => (
             <li key={food.id}>
               <Link href={`/book/${bookId}/${food.id}`} className="text-blue-400 hover:underline">
-                {food.name}
+                {food.id}
               </Link>
             </li>
           ))}

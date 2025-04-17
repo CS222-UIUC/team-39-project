@@ -247,7 +247,7 @@ export default function RecipePage() {
                     commands={editorCommands}
                     extraCommands={editorExtraCommands}
                     //hideToolbar={preview === "preview"}
-                    visibleDragbar={false}
+                    visiableDragbar={false}
                     highlightEnable={false}
                     height={editorHeight}
                     style={{ whiteSpace: 'white-space-collapse' }}
@@ -276,7 +276,7 @@ export default function RecipePage() {
                     commands={editorCommands}
                     extraCommands={editorExtraCommands}
                     //hideToolbar={preview === "preview"}
-                    visibleDragbar={false}
+                    visiableDragbar={false}
                     highlightEnable={false}
                     height={editorHeight}
                     style={{ whiteSpace: 'normal' }}
