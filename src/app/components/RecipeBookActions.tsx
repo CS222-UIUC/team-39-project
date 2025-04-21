@@ -46,7 +46,7 @@ export default function RecipeBookActions({ initialRecipeBooks, username }: Reci
             console.error('Recipe not found');
             return;
         }
-        await deleteRecipeBook(username, recipeToDelete.name);
+        await deleteRecipeBook(username, recipeToDelete.id);
         setRecipeBooks(recipeBooks.filter(recipe => recipe.id !== recipeBookId));
     };
 

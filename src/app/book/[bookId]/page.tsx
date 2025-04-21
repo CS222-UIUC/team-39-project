@@ -21,5 +21,5 @@ export default async function RecipeBookPageWrapper(props: PageProps)
       redirect('/login'); // Or show a fallback error message
     }
   
-    return <ClientBookPage bookId={bookId} username={payload.username} />;
+    return <ClientBookPage bookId={Number(bookId)} username={payload.username} />;
 }
