@@ -2,9 +2,11 @@
 import React, { useState, useLayoutEffect, useRef, useEffect } from "react";
 import MDEditor, { commands } from '@uiw/react-md-editor'; // https://github.com/uiwjs/react-md-editor?tab=readme-ov-file
 import rehypeSanitize from "rehype-sanitize";
-import { getEnvVariable } from '@/app/lib/config';
+// import { getEnvVariable } from '@/app/lib/config';
 import { uploadImage } from '@/app/actions/upload';
 import _jsxRuntime from "react/jsx-runtime";
+import { useParams } from "next/navigation";
+import { getRecipe, updateRecipe, getAccessDetails } from "@/app/lib/recipes";
 
 const example_recipe_name = "Beginner's Guide to FlavorBook";
 const example_ingredients = `Here is an example of how you can use this space for ingredients.
@@ -106,19 +108,61 @@ const calculateMarginAdjustedHeight = (el: HTMLElement): number => {
 };
 
 export default function RecipePage() {
-    const [recipe_name, setName] = useState(example_recipe_name);
-    const [category, setCategory] = useState(CATEGORIES[0]);
-    const [preview, setPreview] = useState<"edit" | "preview">("preview");
-
-    const [value1, setValue1] = useState(example_ingredients); // value of editor 1
-    const [value2, setValue2] = useState(example_steps); // value of editor 2
-    // Calculating the height of the editor dynamically
+    const { bookId, foodId } = useParams();
+    const book_id = Number(bookId);
+    const recipe_id = Number(foodId);
+    const [recipe_name, setName] = useState('Set your recipe name here');
+    const [category, setCategory] = useState('');
+    const [value1, setValue1] = useState('');
+    const [value2, setValue2] = useState('');
+    const [preview, setPreview] = useState<'preview' | 'edit'>('preview');
+    const [access, setAccess] = useState<'read_only' | 'coedit' | 'owner' | null>(null);
+    // const [recipe_name, setName] = useState(example_recipe_name);
+    // const [category, setCategory] = useState(CATEGORIES[0]);
+    // const [preview, setPreview] = useState<"edit" | "preview">("preview");
+    // const [value1, setValue1] = useState(example_ingredients); // value of editor 1
+    // const [value2, setValue2] = useState(example_steps); // value of editor 2
+  
+    // Calculating the height of the editor dynamically    
     const [mounted, setMounted] = useState(false);
     const [editorHeight, setEditorHeight] = useState(200);
     const containerRef = useRef<HTMLDivElement>(null);
     const fixedElementsRef = useRef<HTMLDivElement>(null);
     const headerRef1 = useRef<HTMLHeadingElement>(null);
     const headerRef2 = useRef<HTMLHeadingElement>(null);
+
+    useEffect(() => {
+        const load = async () => {
+          // const username = "test_user"; // TODO: get the username from the session
+          const recipe = await getRecipe(recipe_id);
+          // const accessInfo = await getAccessDetails(username, book_id);
+
+          setName(recipe.name);
+          setCategory(recipe.category);
+          setValue1(recipe.ingredients);
+          setValue2(recipe.steps);
+          // 👇 For development only
+          const devAccess: 'owner' = 'owner';
+          setAccess(devAccess);
+          console.log('[DEBUG] Dev access set to:', devAccess);
+          };
+          load();
+    }, [book_id, recipe_id]);
+
+    // Debounce update
+    useEffect(() => {
+      console.log('[DEBUG] Auto-save triggered', {
+        preview, access,
+        recipe_name, category, value1, value2
+      });
+      if (preview !== 'edit' || (access !== 'owner' && access !== 'coedit')) return;
+      const debounce = setTimeout(() => {
+        updateRecipe(recipe_id, recipe_name, category, value1, value2)
+          .then(() => console.log('Auto-saved'))
+          .catch((err) => console.error('Auto-save failed', err));
+      }, 500);
+      return () => clearTimeout(debounce);
+    }, [recipe_name, category, value1, value2, preview, access]);
 
     useEffect(() => {
         setMounted(true);
@@ -141,20 +185,21 @@ export default function RecipePage() {
             clearTimeout(timeoutId);
         };
     }, []);
+    if (!access) return <p>Loading recipe...</p>;
 
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            if (containerRef.current && fixedElementsRef.current) {
-                const containerHeight = containerRef.current.offsetHeight;
-                const fixedHeight = calculateMarginAdjustedHeight(fixedElementsRef.current);
-                const headerRef1Height = headerRef1.current ? calculateMarginAdjustedHeight(headerRef1.current) : 0;
-                const headerRef2Height = headerRef2.current ? calculateMarginAdjustedHeight(headerRef2.current) : 0;
-                const availableHeight = containerHeight - (fixedHeight + headerRef1Height + headerRef2Height);
-                setEditorHeight(availableHeight / 2);
-            }
-        }, 0);
-        return () => clearTimeout(timeoutId);
-    }, [preview]);
+    // useEffect(() => {
+    //     const timeoutId = setTimeout(() => {
+    //         if (containerRef.current && fixedElementsRef.current) {
+    //             const containerHeight = containerRef.current.offsetHeight;
+    //             const fixedHeight = calculateMarginAdjustedHeight(fixedElementsRef.current);
+    //             const headerRef1Height = headerRef1.current ? calculateMarginAdjustedHeight(headerRef1.current) : 0;
+    //             const headerRef2Height = headerRef2.current ? calculateMarginAdjustedHeight(headerRef2.current) : 0;
+    //             const availableHeight = containerHeight - (fixedHeight + headerRef1Height + headerRef2Height);
+    //             setEditorHeight(availableHeight / 2);
+    //         }
+    //     }, 0);
+    //     return () => clearTimeout(timeoutId);
+    // }, [preview]);
 
     if (!mounted) return null; // Wait until the component is mounted
 
@@ -247,7 +292,7 @@ export default function RecipePage() {
                     commands={editorCommands}
                     extraCommands={editorExtraCommands}
                     //hideToolbar={preview === "preview"}
-                    visibleDragbar={false}
+                    visiableDragbar={false}
                     highlightEnable={false}
                     height={editorHeight}
                     style={{ whiteSpace: 'white-space-collapse' }}
@@ -276,7 +321,7 @@ export default function RecipePage() {
                     commands={editorCommands}
                     extraCommands={editorExtraCommands}
                     //hideToolbar={preview === "preview"}
-                    visibleDragbar={false}
+                    visiableDragbar={false}
                     highlightEnable={false}
                     height={editorHeight}
                     style={{ whiteSpace: 'normal' }}

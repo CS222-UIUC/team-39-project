@@ -114,10 +114,10 @@ const deleteRecipe = (req, res) => {
   };
   */
 
-  const getOneRecipe = (req, res) => {
+  const getOneRecipe = (req, res) => { 
     const { recipe_id } = req.query;
     if (!recipe_id) return res.status(400).json({ error: 'Missing recipe_id' });
-  
+    console.log('getOneRecipe called', recipe_id);
     connection.query('SELECT * FROM Recipes WHERE RecipeId = ?', [recipe_id], (err, results) => {
       if (err) return res.status(500).json({ error: err.message });
       if (results.length === 0) return res.status(404).json({ error: 'Recipe not found' });
@@ -134,6 +134,7 @@ const deleteRecipe = (req, res) => {
   
 const updateRecipe = (req, res) => {
     const { recipe_id, recipe_name, recipe_category, recipe_ingredients, recipe_steps } = req.body;
+    console.log('updateRecipe called', recipe_id);
     if (!recipe_id || !recipe_name || !recipe_category || !recipe_ingredients || !recipe_steps) {
       return res.status(400).json({ error: 'Missing fields' });
     }
