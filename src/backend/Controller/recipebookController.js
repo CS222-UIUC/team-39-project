@@ -186,7 +186,6 @@ const postRecipeBook = (req, res) => {
       return res.status(400).json({ ok: false, error: "Missing required fields" });
     }
   
-    // Make sure invited user exists
     const checkUserQuery = `
       SELECT * FROM Users WHERE UserId = ?
     `;
@@ -219,13 +218,10 @@ const postRecipeBook = (req, res) => {
   const inviteCoedit = (req, res) => {
     console.log('inviteCoedit called');
     const { username, invited_username, book_id } = req.body;
-  
-    // Step 1: Validate input
     if (!username || !invited_username || !book_id) {
       return res.status(400).json({ ok: false, error: "Missing required fields" });
     }
   
-    // Step 2: Check if invited user exists
     const checkUserQuery = `SELECT * FROM Users WHERE UserId = ?`;
     connection.query(checkUserQuery, [invited_username], (userErr, userResults) => {
       if (userErr) {
