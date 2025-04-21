@@ -25,13 +25,13 @@ There are three access levels, from lowest to highest: read only, coedit, and ow
 ## Backend Signatures
 ```
 ======login page======
-http://localhost:2333/api/login
+http://localhost:2333/api/login(Done)
 - type: post
 - input: name, password
 - return: response.ok == True if successful
 
 ======signup page======
-http://localhost:2333/api/signup
+http://localhost:2333/api/signup(Done)
 - type: post
 - input: name, password
 - process: will create a beginer guide for the user (with username=name) and the user will own it.
@@ -70,13 +70,13 @@ http://localhost:2333/api/recipebook/content
     - If access_to_it == "read_only" or "coedit", make the change name button disappear
     - If access_to_it == "read_only", make all recipe delete buttons disappear
     
-http://localhost:2333/api/recipebook/change_name
+http://localhost:2333/api/recipebook/change_name(Done)
 - type: patch
 - input: book_id, new_book_name
 - process: change book name. Only owner can change name. This function will only be called by the owner.
 - return: response.ok == True if successful
 
-http://localhost:2333/api/recipebook/invite_readonly
+http://localhost:2333/api/recipebook/invite_readonly(Done)
 - type: post
 - input: username, invited_username, book_id
 - return: response.ok == True if successful
@@ -84,7 +84,7 @@ http://localhost:2333/api/recipebook/invite_readonly
     - This function will only be called by the owner.
     - If response.ok == False, alert user the error message.
 
-http://localhost:2333/api/recipebook/invite_coedit
+http://localhost:2333/api/recipebook/invite_coedit(Done)
 - type: post
 - input: username, invited_username, book_id
 - return: response.ok == True if successful
@@ -92,27 +92,27 @@ http://localhost:2333/api/recipebook/invite_coedit
     - This function will only be called by the owner.
     - If response.ok == False, alert user the error message.
 
-http://localhost:2333/api/recipe/
+http://localhost:2333/api/recipe/(Done)
 - type: post
 - input: book_id, recipe_name
 - process: make recipe_category == "Uncategorized"
 - return: response.ok == True if successfully add a new recipe to the given recipe book.
 - responsibility of frontend: This function will only be called by the owner or coeditor (not read only visitor). Refresh the page if success.
 
-http://localhost:2333/api/recipe/
+http://localhost:2333/api/recipe/(Done)
 - type: delete
 - input: book_id, recipe_id
 - return: response.ok == True if successfully delete a recipe from the given recipe book
 - responsibility of frontend: This function will only be called by the owner or coeditor (not read only visitor).
 
 =====recipe editing page======
-http://localhost:2333/api/recipe/get_one_recipe
+http://localhost:2333/api/recipe/get_one_recipe(Done)
 - type: get
 - input: recipe_id
 - return: recipe_name, recipe_category, recipe_ingredients (markdown), recipe_steps (markdown)
 - responsibility of frontend: call api/recipebook/content to know access_to_it. If access_to_it == 'read_only', make switch_edit_mode button disappear
 
-http://localhost:2333/api/recipe/update_recipe
+http://localhost:2333/api/recipe/update_recipe(Done)
 - type：patch
 - input: recipe_id, recipe_name, recipe_category, recipe_ingredients, recipe_steps
 - return: response.ok == True if successful
