@@ -1,22 +1,26 @@
 'use client' // Required for state handling
 import { useState } from 'react';
 import { signup } from '@/app/actions/auth';
+import ReactiveButton from 'reactive-button';
+// https://github.com/arifszn/reactive-button
 
 export function SignupForm() {
     const [error, setError] = useState<string | null>(null);
+    const [state, setState] = useState('idle');
 
     return (
         <form action={async (formData) => {
+            setState('loading');
             setError(null); // Clear previous errors
             const result = await signup(formData);
             if (result?.errors) {
-                if ('general' in result.errors) {
+                setState('error');
+                if ('general' in result.errors) 
                     setError(result.errors.general);
-                } else {
-                    // Handle other error cases, if necessary
+                else
                     setError('An unknown error occurred.');
-                }
             }
+            else setState('success');
         }}>
             <div>
                 <label htmlFor="username">Username: </label>
@@ -30,7 +34,16 @@ export function SignupForm() {
             
             {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
             
-            <button type="submit">Sign up</button>
+            <ReactiveButton 
+                buttonState={state}
+                type="submit" 
+                color="violet" 
+                idleText="Sign up" 
+                loadingText="Wait up to 1min"
+                successText="Redirecting"
+                errorText="Try again"
+                messageDuration={3000}
+            />
         </form>
     );
 }
