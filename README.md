@@ -112,7 +112,7 @@ http://localhost:2333/api/recipe/get_one_recipe(Done)
 - return: recipe_name, recipe_category, recipe_ingredients (markdown), recipe_steps (markdown)
 - responsibility of frontend: call api/recipebook/content to know access_to_it. If access_to_it == 'read_only', make switch_edit_mode button disappear
 
-http://localhost:2333/api/recipe/update_recipe
+http://localhost:2333/api/recipe/update_recipe(Done)
 - type：patch
 - input: recipe_id, recipe_name, recipe_category, recipe_ingredients, recipe_steps
 - return: response.ok == True if successful
