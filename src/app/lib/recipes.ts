@@ -109,26 +109,19 @@ async function deleteRecipe(book_id: number, recipe_id: number) {
   return res.ok; // Return true if successfully deleted
 }
 
-export async function getRecipe(recipe_id: number) {
-  const body = { recipe_id };
-  
-  const res = await fetch(`${RECIPE_API}/get_one_recipe`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-
+export async function getRecipe(recipe_id: number) {  
+  const res = await fetch(`${RECIPE_API}/get_one_recipe?recipe_id=${recipe_id}`);
   if (!res.ok) throw new Error('Failed to fetch recipe details');
-
   const result = await res.json();
   console.log('GET one recipe result:', result);
 
+  if (!res.ok) throw new Error('Failed to fetch recipe details');
   return {
-    id: result.id,
-    name: result.name,
-    category: result.category,
-    ingredients: result.ingredients, // markdown format
-    steps: result.steps, // markdown format
+    id: recipe_id,
+    name: result.recipe_name,
+    category: result.recipe_category,
+    ingredients: result.recipe_ingredients, 
+    steps: result.recipe_steps
   };
 }
 
@@ -145,4 +138,21 @@ export async function updateRecipe(recipe_id: number, recipe_name: string, recip
   if (!res.ok) throw new Error('Failed to update recipe');
 
   return res.ok; // Return true if successful
+}
+
+
+export async function getAccessDetails(username: string, bookId: number) {
+  const url = `${RECIPE_BOOK_API}content?username=${username}&book_id=${bookId}`;
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) throw new Error('Failed to fetch access info');
+  
+  const result = await res.json();
+  return {
+    relationships_display: result.relationships_display,
+    recipe_ids: result.list_of_recipe_id,
+    access_to_it: result.access_to_it, // 'read_only' | 'coedit' | 'owner'
+  };
 }
