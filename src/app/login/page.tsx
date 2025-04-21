@@ -2,6 +2,7 @@
 "use client";
 import { LoginForm } from '@/app/ui/login-form'
 import { redirect } from 'next/navigation'
+import ReactiveButton from 'reactive-button';
 
 //https://react.dev/reference/react-dom/components/input
 export default function Page() {
@@ -10,15 +11,17 @@ export default function Page() {
             redirect('/signup')
         }
         return (
-          <button onClick={handleClick}>Click here for signing up instead</button>
+            <ReactiveButton onClick={handleClick} color="violet" idleText="Click here for signing up instead" />
         );
     }
     
     return (
-        <div>
-            <h1>Please login</h1>
-            <SignupPageButton />
-            <LoginForm />
+        <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+            <main className="flex flex-col gap-[10px] row-start-2 items-center sm:items-start">
+                <h1 className="text-4xl font-semibold text-center">Please log in</h1>
+                <SignupPageButton />
+                <LoginForm />
+            </main>
         </div>
     );
 }
