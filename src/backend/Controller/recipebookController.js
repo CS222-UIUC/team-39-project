@@ -300,11 +300,94 @@ const postRecipeBook = (req, res) => {
     });
   };
     
+  const getRecipeBookContent = (req, res) => {
+    const { username, book_id } = req.query;
+    console.log('getRecipeBookContent called:', username, book_id);
+    if (!username || !book_id) {
+      return res.status(400).json({ error: 'username and  book_id are required' });
+    }
+  
+    connection.query(
+      `SELECT OwnerId AS owner FROM RecipeBooks WHERE RecipeBookId = ?`,
+      [book_id],
+      (err1, ownerRows) => {
+        if (err1) {
+          console.error('Error getting owner:', err1);
+          return res.status(500).json({ error: err1.message });
+        }
+  
+        if (ownerRows.length === 0) {
+          return res.status(404).json({ error: 'Recipe book not found' });
+        }
+  
+      const owner = ownerRows[0].owner;
+    connection.query(
+      `SELECT UserId FROM Coedit WHERE RecipeBookId = ?`,
+      [book_id],
+      (err2, coeditRows) => {
+        if (err2) {
+          console.error('Error getting coeditors:', err2);
+          return res.status(500).json({ error: err2.message });
+        }
+
+        const coeditors = coeditRows.map(row => row.UserId);
+  
+    connection.query(
+      `SELECT UserId FROM ReadOnly WHERE RecipeBookId = ?`,
+      [book_id],
+      (err3, readonlyRows) => {
+        if (err3) {
+          console.error('Error getting read-only users:', err3);
+          return res.status(500).json({ error: err3.message });
+        }
+
+        const readonlys = readonlyRows.map(row => row.UserId);
+                let access_to_it = null;
+                if (username === owner) {
+                  access_to_it = 'owner';
+                } else if (coeditors.includes(username)) {
+                  access_to_it = 'coedit';
+                } else if (readonlys.includes(username)) {
+                  access_to_it = 'read_only';
+                } else {
+                  return res.status(403).json({ error: 'Access denied to this recipe book' });
+                }
+                connection.query(
+                  `SELECT RecipeId FROM RecipesInRecipeBooks WHERE RecipeBookId = ?`,
+                  [book_id],
+                  (err4, recipeRows) => {
+                    if (err4) {
+                      console.error('Error getting recipe IDs:', err4);
+                      return res.status(500).json({ error: err4.message });
+                    }
+  
+                    const list_of_recipe_id = recipeRows.map(r => r.RecipeId);
+  
+                    // Use GPT here to generate a display string
+                    const displayStr = `Owner: ${owner}` +
+                      `; Coeditor: ${coeditors.join(', ') || 'None'}` +
+                      `; Read only visitor: ${readonlys.join(', ') || 'None'}`;
+  
+                    return res.json({
+                      relationships_display: displayStr,
+                      list_of_recipe_id,
+                      access_to_it
+                    });
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+    );
+  };
+  
   export {
     getAllRecipeBooks,
     postRecipeBook,
     deleteRecipeBook,
-    //updateRecipeBook,
+    getRecipeBookContent,
     changeRecipeBookName,
     inviteReadOnly,
     inviteCoedit,

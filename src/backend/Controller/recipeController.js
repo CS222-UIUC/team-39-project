@@ -12,7 +12,7 @@ const getAllRecipes = (req, res) => {
       res.json(rows);
     });
   };
-  
+
   // Get a single recipe
   const getRecipeById = (req, res) => {
     console.log('getRecipeById called');
@@ -155,7 +155,7 @@ const updateRecipe = (req, res) => {
 export {
    updateRecipe, 
    getOneRecipe, 
-   //getRecipeList,
+   //getRecipeList,   
    deleteRecipe,
    postRecipe
   };

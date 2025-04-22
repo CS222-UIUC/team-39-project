@@ -12,8 +12,9 @@ router.post('/', recipebookController.postRecipeBook);
 // Delete a recipe book
 router.delete('/', recipebookController.deleteRecipeBook);
 
+router.get('/content', recipebookController.getRecipeBookContent);
 // rename a recipe book
-//router.patch('/', recipebookController.updateRecipeBook);
+
 router.patch('/change_name', recipebookController.changeRecipeBookName);
 
 router.post('/invite_readonly', recipebookController.inviteReadOnly);

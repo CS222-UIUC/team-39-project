@@ -59,7 +59,7 @@ http://localhost:2333/api/recipebook/(Done)
 
 ======recipe book page======
 
-http://localhost:2333/api/recipebook/content
+http://localhost:2333/api/recipebook/content(Done)
 - type：get
 - input: username, book_id
 - return: a tuple of (relationships_display, list_of_recipe_id, access_to_it), where 
