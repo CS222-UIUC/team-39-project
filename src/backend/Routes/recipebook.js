@@ -4,13 +4,13 @@ import * as recipebookController from '../Controller/recipebookController.js';
 
 
 // // Get all recipebooks
-// router.get('/', recipebookController.getAllRecipeBooks);
+router.get('/', recipebookController.getAllRecipeBooks);
 
-// // Post a recipe book
-// router.post('/', recipebookController.postRecipeBook);
+// Post a recipe book
+router.post('/', recipebookController.postRecipeBook);
 
-// // Delete a recipe book
-// router.delete('/', recipebookController.deleteRecipeBook);
+// Delete a recipe book
+router.delete('/', recipebookController.deleteRecipeBook);
 
 // rename a recipe book
 //router.patch('/', recipebookController.updateRecipeBook);
@@ -19,5 +19,6 @@ router.patch('/change_name', recipebookController.changeRecipeBookName);
 router.post('/invite_readonly', recipebookController.inviteReadOnly);
 
 router.post('/invite_coedit', recipebookController.inviteCoedit);
+
 
 export default router;

@@ -3,97 +3,150 @@ import connection from '../Database/connection.js';
 // Get all recipeBooks
 const getAllRecipeBooks = (req, res) => {
   console.log('getAllRecipeBooks called');
-  const { username } = req.query; 
+  const username = req.query.username;
   if (!username) {
-    return res.status(400).json({ error: 'Username is required' });
+    return res.status(400).json({ error: 'username is required' });
   }
-  const query = `
-    SELECT *
-    FROM RecipeBooks rb
-    JOIN FavRecipeBooks favb ON rb.RecipeBookId = favb.RecipeBookId
-    WHERE favb.UserId = ?
-    ORDER BY rb.Name ASC
-  `;
-  connection.query(query, [username], (err, rows) => {
-    if (err) return res.status(500).json({ error: err });
-    res.json(rows);
-  });
+  connection.query(
+    `SELECT RecipeBookId AS book_id, Name AS book_name FROM RecipeBooks WHERE OwnerId = ?`,
+    [username],
+    (err, ownedBooks) => {
+      if (err) return res.status(500).json({ error: 'DB error 1' });
+
+      connection.query(
+        `SELECT rb.RecipeBookId AS book_id, rb.Name AS book_name
+         FROM RecipeBooks rb JOIN Coedit c ON rb.RecipeBookId = c.RecipeBookId
+         WHERE c.UserId = ?`,
+        [username],
+        (err, coeditBooks) => {
+          if (err) return res.status(500).json({ error: 'DB error 2' });
+
+          connection.query(
+            `SELECT rb.RecipeBookId AS book_id, rb.Name AS book_name
+             FROM RecipeBooks rb JOIN ReadOnly r ON rb.RecipeBookId = r.RecipeBookId
+             WHERE r.UserId = ?`,
+            [username],
+            (err, readOnlyBooks) => {
+              if (err) return res.status(500).json({ error: 'DB error 3' });
+
+              const books = [
+                ...ownedBooks.map(b => ({
+                  book_id: b.book_id,
+                  book_displayname: b.book_name
+                })),
+                ...coeditBooks.map(b => ({
+                  book_id: b.book_id,
+                  book_displayname: `${b.book_name} (co-edit)`
+                })),
+                ...readOnlyBooks.map(b => ({
+                  book_id: b.book_id,
+                  book_displayname: `${b.book_name} (read only)`
+                }))
+              ];
+
+              res.json(books);
+            }
+          );
+        }
+      );
+    }
+  );
 };
+
 
 // Post a new recipeBook for a user
 const postRecipeBook = (req, res) => {
   console.log('postRecipeBook called');
   const { username, book_name } = req.body;
+
+  console.log('createRecipeBook called:', username, book_name);
+
   if (!username || !book_name) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({ error: 'Missing Fields' });
   }
-  const query = "INSERT INTO RecipeBooks (Name) VALUES (?)";
-  connection.query(query, [book_name], (err, result) => {
-    if (err) return res.status(500).json({ error: err });
-    const recipeBookId = result.insertId;
-    const favQuery = "INSERT INTO FavRecipeBooks (UserId, RecipeBookId) VALUES (?, ?)";
-    connection.query(favQuery, [username, recipeBookId], (favErr) => {
-      if (favErr) return res.status(500).json({ error: favErr });
-      res.status(201).json({ success: true, recipeBookId });
-    });
+
+  const insertQuery = `
+    INSERT INTO RecipeBooks (Name, OwnerId)
+    VALUES (?, ?)
+  `;
+
+  connection.query(insertQuery, [book_name, username], (err, result) => {
+    if (err) {
+      console.error('Error in createRecipeBook:', err);
+      return res.status(500).json({ ok: false, error: err.message });
+    }
+    res.json({ ok: true });
   });
 };
   
   // Delete a recipeBook
   const deleteRecipeBook = (req, res) => {
     console.log('deleteRecipeBook called');
-    const { username, book_name } = req.body;
+    const { username, book_id } = req.body;
+
+    console.log('deleteRecipeBook called:', username, book_id);
   
-    if (!username || !book_name) {
-      return res.status(400).json({ error: "Missing required fields" });
+    if (!username || !book_id) {
+      return res.status(400).json({ ok: false, error: 'username and book_id are required' });
     }
-    const verifyQuery = `
-      SELECT rb.RecipeBookId
-      FROM RecipeBooks rb
-      JOIN FavRecipeBooks favb ON rb.RecipeBookId = favb.RecipeBookId
-      WHERE rb.Name = ? AND favb.UserId = ?
+  
+    // Step 1: Check if user has any access to the book
+    const accessCheckQuery = `
+      SELECT 'owner' AS role FROM RecipeBooks WHERE RecipeBookId = ? AND OwnerId = ?
+      UNION
+      SELECT 'coedit' AS role FROM Coedit WHERE RecipeBookId = ? AND UserId = ?
+      UNION
+      SELECT 'readonly' AS role FROM ReadOnly WHERE RecipeBookId = ? AND UserId = ?
     `;
-    // Verify if the book exists and is associated with the user
-    connection.query(verifyQuery, [book_name, username], (verifyErr, results) => {
-      if (verifyErr) {
-        console.error('Verification query failed:', verifyErr);
-        return res.status(500).json({ error: verifyErr });
+  
+    connection.query(accessCheckQuery, [book_id, username, book_id, username, book_id, username], (err, results) => {
+      if (err) {
+        console.error('Access check error:', err);
+        return res.status(500).json({ ok: false, error: err.message });
       }
   
-      if (results.length === 0) {
-        return res.status(404).json({ error: "Book not found or not associated with this user" });
-      }
+      const roles = results.map(r => r.role);
+      const isOwner = roles.includes('owner');
   
-      const recipeBookId = results[0].RecipeBookId;
-      console.log(`Verified book '${book_name}' for user '${username}'`);
-   
-      const removeFavQuery = `
-        DELETE FROM FavRecipeBooks WHERE UserId = ? AND RecipeBookId = ?
-      `;
-      
-      connection.query(removeFavQuery, [username, recipeBookId], (favDelErr) => {
-        if (favDelErr) {
-          console.error('Error removing from FavRecipeBooks:', favDelErr);
-          return res.status(500).json({ error: favDelErr });
-        }
+      if (isOwner) {
+        const deleteBookQuery = `DELETE FROM RecipeBooks WHERE RecipeBookId = ? AND OwnerId = ?`;
   
-        console.log(`Book '${book_name}' removed from user's favorites.`);
-        const deleteBookQuery = `
-          DELETE FROM RecipeBooks WHERE RecipeBookId = ?
-        `;
-        connection.query(deleteBookQuery, [recipeBookId], (deleteErr) => {
-          if (deleteErr) {
-            console.error('Error deleting book:', deleteErr);
-            return res.status(500).json({ error: deleteErr });
+        connection.query(deleteBookQuery, [book_id, username], (err2) => {
+          if (err2) {
+            console.error('Book delete error:', err2);
+            return res.status(500).json({ ok: false, error: err2.message });
           }
-  
-          console.log(`Book '${book_name}' fully deleted from database.`);
-          res.json({ success: true, msg: `Book '${book_name}' fully deleted.` });
+          return res.json({ ok: true, message: 'Book deleted (owner).' });
         });
-      });
+  
+      } else {
+        connection.query(
+          `DELETE FROM Coedit WHERE RecipeBookId = ? AND UserId = ?`,
+          [book_id, username],
+          (err1, result1) => {
+            if (err1) {
+              console.error('Delete from Coedit error:', err1);
+              return res.status(500).json({ ok: false, error: err1.message });
+            }
+        
+            connection.query(
+              `DELETE FROM ReadOnly WHERE RecipeBookId = ? AND UserId = ?`,
+              [book_id, username],
+              (err2, result2) => {
+                if (err2) {
+                  console.error('Delete from ReadOnly error:', err2);
+                  return res.status(500).json({ ok: false, error: err2.message });
+                }
+        
+                return res.json({ ok: true, message: 'Access removed (coedit/read-only).' });
+              }
+            );
+          }
+        );
+      }
     });
   };
-  
+
 // const updateRecipeBook = (req, res) => {
 //     console.log('updateRecipeBook called');
 //     const { book_id, new_book_name } = req.body;
@@ -185,7 +238,7 @@ const postRecipeBook = (req, res) => {
     if (!username || !invited_username || !book_id) {
       return res.status(400).json({ ok: false, error: "Missing required fields" });
     }
-  
+    // Check if the invited user exists is not necessary here, thanks to our frontend friends.
     const checkUserQuery = `
       SELECT * FROM Users WHERE UserId = ?
     `;
@@ -221,7 +274,7 @@ const postRecipeBook = (req, res) => {
     if (!username || !invited_username || !book_id) {
       return res.status(400).json({ ok: false, error: "Missing required fields" });
     }
-  
+    // Check if the invited user exists is not necessary here, thanks to our frontend friends.
     const checkUserQuery = `SELECT * FROM Users WHERE UserId = ?`;
     connection.query(checkUserQuery, [invited_username], (userErr, userResults) => {
       if (userErr) {

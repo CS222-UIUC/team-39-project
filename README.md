@@ -39,19 +39,19 @@ http://localhost:2333/api/signup(Done)
 
 =====main page======
 
-http://localhost:2333/api/recipebook/
+http://localhost:2333/api/recipebook/ (Done)
 - type: get
 - input: username
 - return: list of all recipe books (owned, read only, and coedit books), each entry = (book_id: int, book_displayname: str), where book_displayname = f'{book_name}{ " (co-edit)", " (read only)", or "" }'
 
-http://localhost:2333/api/recipebook/
+http://localhost:2333/api/recipebook/(Done)
 - type: post
 - input: username, book_name
 - process: create a book, owned by the user
 - return: response.ok == True if successful
 - Responsibility: refresh page. Refresh the page if success.
 
-http://localhost:2333/api/recipebook/
+http://localhost:2333/api/recipebook/(Done)
 - type: delete
 - input: username, book_id
 - process: If the user owns the book, the book will be deleted. Otherwise, the user's access to the book will be removed. Only the owner can delete the book. others can at best remove their access to it. The user must have access to the book when this function is called.
