@@ -6,35 +6,7 @@ import rehypeSanitize from "rehype-sanitize";
 import { uploadImage } from '@/app/actions/upload';
 import _jsxRuntime from "react/jsx-runtime";
 import { useParams } from "next/navigation";
-import { getRecipe, updateRecipe, getAccessDetails } from "@/app/lib/recipes";
-
-const example_recipe_name = "Beginner's Guide to FlavorBook";
-const example_ingredients = `Here is an example of how you can use this space for ingredients.
-
-You can use the button on the top to switch between preview and editing modes.
-Note that you need an empty line between paragraphs. 
-Single line breaks **will not work**.
-
-You can use the button on the *top right* to enter fullscreen mode.
-When you insert an image, patiently wait for a few seconds, then you will see something like \`![userphoto](some_sort_of_url_here.jpg)\`, and you will see the image once you switch back to preview mode.
-
-### Below is an example of ingredients for a recipe "Grilled Chicken as in Chipotle"
-* Chicken thigh: 2 lb
-* Oil: 4 tbsp
-* Adobo chipotle: 2 tbsp + 1.5 tsp
-* Ancho pepper: 2 tsp
-* Ground cumin: 1/2 tbsp
-* Dried oregano: 2 tsp
-* kosher salt: 2 tsp
-* Black pepper`;
-
-const example_steps = `Here is an example of how you can use this space for steps.
-
-1. Mix everything together to marinate the chicken overnight.
-2. Preheat the grill on medium high.
-2. Grill a whole piece of thigh for 10-15 min.
-3. Rest for 5min.
-4. Cut into smaller pieces.`;
+import ReactiveButton from 'reactive-button';
 
 const imageUploadCommand = {
     name: 'uploadImage',
@@ -73,7 +45,7 @@ const imageUploadCommand = {
                     }
                 } catch (error) {
                     console.error("Image upload failed:", error);
-                    alert("An error occurred while uploading the image.");
+                    alert(`An error occurred while uploading the image: ${error}`);
                 }
             }
             document.body.removeChild(input);
@@ -234,15 +206,15 @@ export default function RecipePage() {
                     </h1>
                 )}
 
-                <button
+                <ReactiveButton 
                     onClick={() => setPreview(preview === "edit" ? "preview" : "edit")}
+                    color="violet" 
+                    idleText={preview === "edit" ? "Switch to Preview Mode" :  "Switch to Edit Mode"} 
                     style={{
                         margin: "5px",
                         width: "100%", // Occupy full width
                     }}
-                >
-                    Switch to {preview === "edit" ? "Preview" : "Edit"} Mode
-                </button>
+                />
 
                 <div style={{ margin: "10px", width: "100%" }}>
                     <h2 className="text-xl font-bold mb-2">Category:</h2>
@@ -292,7 +264,7 @@ export default function RecipePage() {
                     commands={editorCommands}
                     extraCommands={editorExtraCommands}
                     //hideToolbar={preview === "preview"}
-                    visiableDragbar={false}
+                    visibleDragbar={false}
                     highlightEnable={false}
                     height={editorHeight}
                     style={{ whiteSpace: 'white-space-collapse' }}
@@ -321,7 +293,7 @@ export default function RecipePage() {
                     commands={editorCommands}
                     extraCommands={editorExtraCommands}
                     //hideToolbar={preview === "preview"}
-                    visiableDragbar={false}
+                    visibleDragbar={false}
                     highlightEnable={false}
                     height={editorHeight}
                     style={{ whiteSpace: 'normal' }}

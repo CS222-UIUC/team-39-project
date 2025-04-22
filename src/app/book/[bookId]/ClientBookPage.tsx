@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { updateRecipeBook } from '@/app/lib/recipes';
+import ReactiveButton from 'reactive-button';
 
 interface Props {
   username: string;
@@ -62,8 +63,26 @@ export default function ClientBookPage({ username, bookId }: Props) {
               value={editedBookName}
               onChange={(e) => setEditedBookName(e.target.value)}
             />
-            <button onClick={handleTitleSave} className="bg-blue-500 px-3 py-1 rounded text-white">Save</button>
-            <button onClick={handleTitleCancel} className="bg-gray-500 px-3 py-1 rounded text-white">Cancel</button>
+
+            <ReactiveButton 
+                onClick={handleTitleSave}
+                color="violet" 
+                idleText="Save" 
+                style={{
+                    margin: "5px",
+                    width: "50%", // Occupy half width
+                }}
+            />
+            <ReactiveButton 
+                onClick={handleTitleCancel}
+                color="violet" 
+                idleText="Cancel" 
+                style={{
+                    margin: "5px",
+                    width: "50%", // Occupy half width
+                }}
+            />
+            {/* className="bg-gray-500 px-3 py-1 rounded text-white" */}
           </div>
         ) : (
           <h1 className="text-2xl font-bold mb-4 cursor-pointer" onClick={() => setIsEditingTitle(true)}>
@@ -79,9 +98,7 @@ export default function ClientBookPage({ username, bookId }: Props) {
             value={newFoodName}
             onChange={(e) => setNewFoodName(e.target.value)}
           />
-          <button onClick={addFood} className="bg-green-500 px-3 py-1 rounded text-white">
-            + Add Food
-          </button>
+          <ReactiveButton onClick={addFood} color="violet" idleText="+ Add Recipe" className="bg-green-500 px-3 py-1 rounded text-white"/>
         </div>
   
         <ul>
