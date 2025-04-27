@@ -1,72 +1,98 @@
 // user interaction in login page, so we need a client to handle it
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { addRecipeBook, deleteRecipeBook } from '@/app/lib/recipes';
-import { getUsername } from '../actions/auth';
+import { getRecipeBookList, addRecipeBook, deleteRecipeBook, getAccessDetails } from '@/app/lib/recipes';
 
 // Define a type for Recipe
-type Recipe = {
+type RecipeBook = {
     id: number;
-    name: string;
+    displayName: string;
+    access: 'owner' | 'coedit' | 'read_only';
 };
 
 // Define props for RecipeBookActions component
 interface RecipeBookActionsProps {
-    initialRecipeBooks: Recipe[];
+    initialRecipeBooks: { id: number; name: string }[];
     username: string;
 }
 
 
 export default function RecipeBookActions({ initialRecipeBooks, username }: RecipeBookActionsProps) {
-    const [recipeBooks, setRecipeBooks] = useState<Recipe[]>(initialRecipeBooks);
+    const [recipeBooks, setRecipeBooks] = useState<RecipeBook[]>([]);
     const [newRecipeBookName, setNewRecipeBookName] = useState('');
+
+    const loadBooks = async () => {
+        if (!username) return;
+        const formattedBooks = await getRecipeBookList(username); 
+        setRecipeBooks(formattedBooks);
+    };
+
+    useEffect(() => {
+        loadBooks();
+    }, [username]);    
 
     const handleAddRecipeBook = async () => {
         if (!newRecipeBookName.trim()) return;
-        // const username = await getUsername();
         if (!username) {
-            console.error('Username not found');
-            return;
+          console.error('Username not found');
+          return;
         }
-        const newRecipe = await addRecipeBook(username, newRecipeBookName);
-        setRecipeBooks([...recipeBooks, newRecipe]);
+    
+        await addRecipeBook(username, newRecipeBookName);
+        await loadBooks();
         setNewRecipeBookName('');
     };
 
-    const handleDeleteRecipeBook = async (recipeBookId: number) => {
-        // const username = await getUsername();
+    const handleDeleteRecipeBook = async (bookId: number) => {
         if (!username) {
-            console.error('Username not found');
-            return;
+          console.error('Username not found');
+          return;
         }
-        const recipeToDelete = recipeBooks.find(recipe => recipe.id === recipeBookId);
-        if (!recipeToDelete) {
-            console.error('Recipe not found');
-            return;
-        }
-        await deleteRecipeBook(username, recipeToDelete.id);
-        setRecipeBooks(recipeBooks.filter(recipe => recipe.id !== recipeBookId));
+    
+        await deleteRecipeBook(username, bookId);
+        await loadBooks();
     };
 
     return (
-        <div>
-            <h2>Your Recipe Book List</h2>
-            <input 
-                type="text" 
-                value={newRecipeBookName} 
-                onChange={(e) => setNewRecipeBookName(e.target.value)}
-                placeholder="New recipe book name"
+        <div className="p-6 text-black">
+          <h2 className="text-2xl font-bold mb-4">Your Recipe Book List</h2>
+    
+          <div className="flex items-center gap-2 mb-6">
+            <input
+              type="text"
+              className="text-black px-2 py-1 rounded border"
+              value={newRecipeBookName}
+              onChange={(e) => setNewRecipeBookName(e.target.value)}
+              placeholder="New recipe book name"
             />
-            <button onClick={handleAddRecipeBook}>Add Recipe Book</button>
-            <ul>
-                {recipeBooks.map(recipe => (
-                    <li key={recipe.id}>
-                        <Link href={`/book/${recipe.name.replaceAll(' ', '-')}`}>{recipe.name}</Link>
-                        <button onClick={() => handleDeleteRecipeBook(recipe.id)}>Delete</button>
-                    </li>
-                ))}
+            <button
+              onClick={handleAddRecipeBook}
+              className="bg-green-500 px-4 py-1 rounded text-white"
+            >
+              Add Recipe Book
+            </button>
+          </div>
+    
+          <ul className="list-disc pl-5 space-y-2">
+            {recipeBooks.map((book) => (
+                <li key={book.id} className="flex items-center gap-2">
+                <Link href={`/book/${book.id}`} className="text-blue-400 hover:underline">
+                    {book.displayName}
+                </Link>
+
+                {/* Only show delete button if owner */}
+                {book.access === 'owner' && (
+                    <button
+                    onClick={() => handleDeleteRecipeBook(book.id)}
+                    className="bg-red-500 text-white px-2 py-1 rounded text-xs"
+                    >
+                    Delete
+                    </button>
+                )}
+                </li>
+            ))}
             </ul>
         </div>
     );

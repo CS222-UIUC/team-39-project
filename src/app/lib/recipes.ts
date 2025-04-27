@@ -8,29 +8,36 @@ export async function getRecipeBookList(username: string) {
   if (!res.ok) throw new Error('Failed to fetch recipe books');
   const data = await res.json();
 
-  // Transform backend format to frontend format
-  return data.map((book: any) => ({
-    id: book.book_id,
-    name: `${book.book_name}${book.is_coedit ? " (co-edit)" : book.is_readonly ? " (read only)" : ""}`,
-  }));
-}
+  return data.map((book: any) => {
+    const displayName = book.book_displayname ?? 'Unnamed Book';
 
+    let access: 'owner' | 'coedit' | 'read_only' = 'owner';
+    if (displayName.endsWith('(coedit)')) access = 'coedit';
+    else if (displayName.endsWith('(read only)')) access = 'read_only';
+
+    return {
+      id: book.book_id,
+      displayName,
+      access
+    };
+  });
+}
 // Add a new recipe book
 export async function addRecipeBook(username: string, book_name: string) {
-  const res = await fetch(RECIPE_BOOK_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, book_name }),
-    });
-  
-    const result = await res.json().catch(() => null);
-    console.log('POST result:', result);
-  
-    if (!res.ok) {
-      throw new Error('Failed to add recipe book');
-    }
-    // todo: verify if it correctly returns the id
-    return { id: result.id, name: book_name };
+  const res = await fetch(`${RECIPE_BOOK_API}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, book_name }),
+  });
+
+  if (!res.ok) throw new Error('Failed to create recipe book');
+
+  const result = await res.json();
+
+  return {
+    id: result.book_id, 
+    name: book_name,
+  };
 }
 
 // Delete a recipe book by ID
@@ -38,14 +45,13 @@ export async function deleteRecipeBook(username: string, book_id: number) {
   const res = await fetch(RECIPE_BOOK_API, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, book_name: book_id }),
+    body: JSON.stringify({ username, book_id }),
   });
 
   if (!res.ok) throw new Error('Failed to delete recipe book');
 }
 
 // change the name of a recipe book, only called by the owner
-// TODO: fix 
 export async function updateRecipeBook(book_id: number, new_book_name: string) {
   const body = { book_id, new_book_name };
   const res = await fetch(`${RECIPE_BOOK_API}/change_name`, {
@@ -71,13 +77,51 @@ export async function getRecipeBookContent(username: string, book_id: number) {
   console.log('GET content result:', result);
 
   return {
-    relationshipsDisplay: result[0],
-    listOfRecipeIds: result[1],
-    accessToIt: result[2],
+    relationships_display: result.relationships_display,
+    recipe_ids: result.list_of_recipe_id,
+    access_to_it: result.access_to_it,
   };
 }
 
-async function addRecipe(book_id: number, recipe_name: string) {
+export async function inviteReadOnly(username: string, invitedUsername: string, bookId: number) {
+  const body = { username, invited_username: invitedUsername, book_id: bookId };
+
+  const res = await fetch(`${RECIPE_BOOK_API}/invite_readonly`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  const result = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    const errorMsg = result.error || 'Failed to invite read-only user';
+    throw new Error(errorMsg);
+  }
+
+  return res.ok;
+}
+
+export async function inviteCoedit(username: string, invitedUsername: string, bookId: number) {
+  const body = { username, invited_username: invitedUsername, book_id: bookId };
+
+  const res = await fetch(`${RECIPE_BOOK_API}/invite_coedit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  const result = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    const errorMsg = result.error || 'Failed to invite coeditor';
+    throw new Error(errorMsg);
+  }
+
+  return res.ok;
+}
+
+export async function addRecipe(book_id: number, recipe_name: string) {
   const body = {
     book_id,
     recipe_name,
@@ -95,7 +139,7 @@ async function addRecipe(book_id: number, recipe_name: string) {
   return res.ok; // Return true if successfully added
 }
 
-async function deleteRecipe(book_id: number, recipe_id: number) {
+export async function deleteRecipe(book_id: number, recipe_id: number) {
   const body = { book_id, recipe_id };
 
   const res = await fetch(`${RECIPE_API}/`, {
@@ -125,6 +169,25 @@ export async function getRecipe(recipe_id: number) {
   };
 }
 
+export async function getBookNameById(username: string, bookId: number): Promise<string> {
+  const res = await fetch(`${RECIPE_BOOK_API}/?username=${username}`);
+  if (!res.ok) throw new Error('Failed to fetch recipe books');
+
+  const data = await res.json(); // list of all books
+  const book = data.find((b: any) => b.book_id === bookId);
+
+  if (!book) {
+    console.warn(`Book with id ${bookId} not found`);
+    return `Book ${bookId}`;
+  }
+
+  let displayName = book.book_displayname ?? `Book ${bookId}`;
+
+  displayName = displayName.replace(/\s*\(coedit\)$/, '').replace(/\s*\(read only\)$/, '');
+
+  return displayName;
+}
+
 // this function updates the name, category, ingredients and steps of a recipe
 export async function updateRecipe(recipe_id: number, recipe_name: string, recipe_category: string, recipe_ingredients: string, recipe_steps: string) {
   const body = { recipe_id, recipe_name, recipe_category, recipe_ingredients, recipe_steps };
@@ -142,7 +205,7 @@ export async function updateRecipe(recipe_id: number, recipe_name: string, recip
 
 
 export async function getAccessDetails(username: string, bookId: number) {
-  const url = `${RECIPE_BOOK_API}content?username=${username}&book_id=${bookId}`;
+  const url = `${RECIPE_BOOK_API}/content?username=${username}&book_id=${bookId}`;
   const res = await fetch(url, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
