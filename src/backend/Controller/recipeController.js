@@ -135,7 +135,7 @@ const deleteRecipe = (req, res) => {
 const updateRecipe = (req, res) => {
     const { recipe_id, recipe_name, recipe_category, recipe_ingredients, recipe_steps } = req.body;
     console.log('updateRecipe called', recipe_id);
-    if (!recipe_id || !recipe_name || !recipe_category || !recipe_ingredients || !recipe_steps) {
+    if (!recipe_id || !recipe_name || !recipe_category) {
       return res.status(400).json({ error: 'Missing fields' });
     }
 

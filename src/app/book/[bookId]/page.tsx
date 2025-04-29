@@ -8,7 +8,7 @@ import ClientBookPage from './ClientBookPage';
 import { redirect } from 'next/navigation';
 
 type PageProps = {
-    params: Promise<{ bookId: string }>; // Ensure `params` is awaited
+    params: Promise<{ bookId: number }>; // Ensure `params` is awaited
 }
 
 export default async function RecipeBookPageWrapper(props: PageProps) 
@@ -21,5 +21,5 @@ export default async function RecipeBookPageWrapper(props: PageProps)
       redirect('/login'); // Or show a fallback error message
     }
   
-    return <ClientBookPage bookId={Number(bookId)} username={payload.username} />;
+    return <ClientBookPage id={bookId} username={payload.username} />;
 }

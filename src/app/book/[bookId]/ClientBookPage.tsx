@@ -1,99 +1,244 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { updateRecipeBook } from '@/app/lib/recipes';
+import { getRecipeBookContent, getBookNameById, updateRecipeBook, addRecipe, deleteRecipe, getRecipe } from '@/app/lib/recipes';
+import { inviteReadOnly, inviteCoedit } from '@/app/lib/recipes'; // import them!
 
-interface Props {
-  username: string;
-  bookId: number;
+interface Recipe {
+  name: string;
+  id: number; // recipe book id
 }
 
-export default function ClientBookPage({ username, bookId }: Props) {
-    const router = useRouter();
-    // todo: decode the name of the book by calling getRecipeBook
-    const readableBookName = decodeURIComponent(bookId.replaceAll('-', ' ')).trim();
+export default function ClientBookPage({ id, username }: { id: number; username: string }) {
+    const { bookId } = useParams();
+    const [bookName, setBookName] = useState('');
+    const [isEditingBookName, setIsEditingBookName] = useState(false);
+    const [editedBookName, setEditedBookName] = useState('');
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [newRecipeName, setNewRecipeName] = useState('');
+    const [access, setAccess] = useState<'owner' | 'coedit' | 'read_only'>('read_only');
+    const [inviteMode, setInviteMode] = useState(false);
+    const [inviteUsername, setInviteUsername] = useState('');
+    const [inviteRole, setInviteRole] = useState<'read_only' | 'coedit'>('read_only');
+    
+
+    const [relationships, setRelationships] = useState('');
   
-    const [isEditingTitle, setIsEditingTitle] = useState(false);
-    const [editedBookName, setEditedBookName] = useState(readableBookName);
-  
-    const [foods, setFoods] = useState<{ id: string; name: string }[]>([]);
-    const [newFoodName, setNewFoodName] = useState('');
-  
-    const addFood = () => {
-      if (!newFoodName.trim()) return;
-  
-      const newFood = {
-        id: `food-${Date.now()}`,
-        name: newFoodName.trim(),
-      };
-  
-      setFoods([...foods, newFood]);
-      setNewFoodName('');
-    };
-  
-    const handleTitleSave = async () => {
+    const loadBookData = async () => {
+      if (!bookId || typeof bookId !== 'string') return;
+    
       try {
-        if (editedBookName === readableBookName) {
-          setIsEditingTitle(false);
-          return;
-        }
-  
-        await updateRecipeBook(bookId, editedBookName.trim());
-        setIsEditingTitle(false);
-        router.push(`/book/${editedBookName.replaceAll(' ', '-')}`);
-      } catch (err) {
-        console.error('Failed to update recipe book title:', err);
+        const id = parseInt(bookId); // id is BookID
+        const content = await getRecipeBookContent(username, id);
+        setRelationships(content.relationships_display);
+        setAccess(content.access_to_it);
+    
+        const bookName = await getBookNameById(username, id);
+        setBookName(bookName);
+    
+        const fetchedRecipes = await Promise.all(
+          content.recipe_ids.map(async (recipeId: number) => {
+            const recipe = await getRecipe(recipeId);  // recipeId, not bookId
+            return { id: recipe.id, name: recipe.name };
+          })
+        );
+        setRecipes(fetchedRecipes);
+    
+      } catch (error) {
+        console.error('Error loading book data:', error);
       }
     };
   
-    const handleTitleCancel = () => {
-      setEditedBookName(readableBookName);
-      setIsEditingTitle(false);
+    useEffect(() => {
+      loadBookData();
+    }, [bookId]);
+
+    const handleSaveBookName = async () => {
+      try {
+        if (bookId && typeof bookId === 'string') {
+          await updateRecipeBook(parseInt(bookId), editedBookName);
+        } else {
+          console.error('Invalid bookId:', bookId);
+        }
+        setBookName(editedBookName);  // update UI
+        setIsEditingBookName(false);  // exit editing mode
+      } catch (error) {
+        console.error('Error updating book name:', error);
+      }
+    };
+
+    const handleAddRecipe = async () => {
+      if (!newRecipeName.trim() || !bookId || typeof bookId !== 'string') return;
+      await addRecipe(parseInt(bookId), newRecipeName);
+      await loadBookData();
+      setNewRecipeName('');
     };
   
+    const handleDeleteRecipe = async (recipeId: number) => {
+      if (!bookId || typeof bookId !== 'string') return;
+      await deleteRecipe(parseInt(bookId), recipeId);
+      await loadBookData();
+    };
+  
+    const handleInviteButtonClick = () => {
+      const confirmInvite = confirm('Are you sure you want to invite someone to this recipe book?');
+      if (confirmInvite) {
+        setInviteMode(true);
+      }
+    };
+
+    const handleSendInvite = async () => {
+      if (!inviteUsername.trim()) {
+        alert('Please enter a username to invite.');
+        return;
+      }
+
+      try {
+        if (inviteRole === 'read_only') {
+          await inviteReadOnly(username, inviteUsername.trim(), id);
+        } else {
+          await inviteCoedit(username, inviteUsername.trim(), id);
+        }
+        alert('Invitation sent successfully!');
+        setInviteMode(false);
+        setInviteUsername('');
+      } catch (error: any) {
+        alert(`Failed to invite: ${error.message}`);
+      }
+    };
+
+    const handleCancelInvite = () => {
+      setInviteMode(false);
+      setInviteUsername('');
+};
     return (
-      <div className="p-3 text-black">
-        {isEditingTitle ? (
-          <div className="flex items-center gap-2 mb-4">
+      // only owner of the book can edti the name
+      <div className="p-6 text-black">
+        <div className="flex items-center gap-2 mb-4">
+        {isEditingBookName ? (
+          <>
             <input
-              className="text-black px-2 py-1 rounded"
+              type="text"
+              className="text-black px-2 py-1 rounded border"
               value={editedBookName}
               onChange={(e) => setEditedBookName(e.target.value)}
             />
-            <button onClick={handleTitleSave} className="bg-blue-500 px-3 py-1 rounded text-white">Save</button>
-            <button onClick={handleTitleCancel} className="bg-gray-500 px-3 py-1 rounded text-white">Cancel</button>
-          </div>
+            <button
+              onClick={handleSaveBookName}
+              className="bg-green-500 px-3 py-1 rounded text-white"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setIsEditingBookName(false)}
+              className="bg-gray-500 px-3 py-1 rounded text-white"
+            >
+              Cancel
+            </button>
+          </>
         ) : (
-          <h1 className="text-2xl font-bold mb-4 cursor-pointer" onClick={() => setIsEditingTitle(true)}>
-            {editedBookName}
-          </h1>
+          <>
+          {/* owner can edit book name */}
+          <h1 className="text-3xl font-bold">{bookName}</h1>
+
+            {access === 'owner' && (
+              <button
+                onClick={() => {
+                  setEditedBookName(bookName);
+                  setIsEditingBookName(true);
+                }}
+                className="bg-green-500 px-4 py-1 rounded text-white"
+              >
+                Change Name
+              </button>
+            )}
+          </>
+        )}
+      </div>
+        <p className="mb-4">{relationships}</p>
+        {access === 'owner' && (
+        <div className="my-6">
+          {/* owner can invite other people */}
+          {!inviteMode ? (
+            <button
+              onClick={handleInviteButtonClick}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Invite Other User
+            </button>
+          ) : (
+            <div className="flex flex-col md:flex-row items-center gap-2">
+              <select
+                value={inviteRole}
+                onChange={(e) => setInviteRole(e.target.value as 'read_only' | 'coedit')}
+                className="border px-2 py-1 rounded text-black"
+              >
+                <option value="read_only">Read Only</option>
+                <option value="coedit">Co-Editor</option>
+              </select>
+              <input
+                type="text"
+                value={inviteUsername}
+                onChange={(e) => setInviteUsername(e.target.value)}
+                placeholder="Enter username to invite"
+                className="border px-2 py-1 rounded text-black"
+              />
+              <button
+                onClick={handleSendInvite}
+                className="bg-green-500 text-white px-4 py-1 rounded"
+              >
+                Confirm Invite
+              </button>
+              <button
+                onClick={handleCancelInvite}
+                className="bg-red-500 text-white px-4 py-1 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      {/* owner and coeditor can add, delete recipes */}
+        {(access === 'owner' || access === 'coedit') && (
+          <div className="flex items-center gap-2 mb-6">
+            <input
+              type="text"
+              className="text-black px-2 py-1 rounded border"
+              value={newRecipeName}
+              onChange={(e) => setNewRecipeName(e.target.value)}
+              placeholder="New recipe name"
+            />
+            <button
+              onClick={handleAddRecipe}
+              className="bg-green-500 px-4 py-1 rounded text-white"
+            >
+              + Add Recipe
+            </button>
+          </div>
         )}
   
-        <div className="flex items-center gap-2 mb-4">
-          <input
-            type="text"
-            className="text-black px-2 py-1 rounded"
-            placeholder="Enter new food name"
-            value={newFoodName}
-            onChange={(e) => setNewFoodName(e.target.value)}
-          />
-          <button onClick={addFood} className="bg-green-500 px-3 py-1 rounded text-white">
-            + Add Food
-          </button>
-        </div>
-  
-        <ul>
-          {foods.map((food) => (
-            <li key={food.id}>
-              <Link href={`/book/${bookId}/${food.id}`} className="text-blue-400 hover:underline">
-                {food.id}
+        <ul className="list-disc pl-5 space-y-2">
+          {recipes.map((recipe) => (
+            <li key={recipe.id} className="flex items-center gap-2">
+              <Link href={`/book/${bookId}/${recipe.id}`} className="text-blue-400 hover:underline">
+                {recipe.name}
               </Link>
+  
+              {(access === 'owner' || access === 'coedit') && (
+                <button
+                  onClick={() => handleDeleteRecipe(recipe.id)}
+                  className="bg-red-500 text-white px-2 py-1 rounded text-xs"
+                >
+                  Delete
+                </button>
+              )}
             </li>
           ))}
         </ul>
       </div>
     );
-  }
+}
   
