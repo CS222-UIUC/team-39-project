@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ReactiveButton from 'reactive-button';
 import { getRecipeBookContent, getBookNameById, updateRecipeBook, addRecipe, deleteRecipe, getRecipe } from '@/app/lib/recipes';
@@ -13,6 +13,7 @@ interface Recipe {
 }
 
 export default function ClientBookPage({ id, username }: { id: number; username: string }) {
+    const router = useRouter();
     const { bookId } = useParams();
     const [bookName, setBookName] = useState('');
     const [isEditingBookName, setIsEditingBookName] = useState(false);
@@ -84,10 +85,7 @@ export default function ClientBookPage({ id, username }: { id: number; username:
     };
   
     const handleInviteButtonClick = () => {
-      const confirmInvite = confirm('Are you sure you want to invite someone to this recipe book?');
-      if (confirmInvite) {
-        setInviteMode(true);
-      }
+      setInviteMode(true);
     };
 
     const handleSendInvite = async () => {
@@ -114,134 +112,139 @@ export default function ClientBookPage({ id, username }: { id: number; username:
       setInviteMode(false);
       setInviteUsername('');
 };
-    return (
-      // only owner of the book can edit the name
-      <div className="p-6 text-black">
-        <div className="flex items-center gap-2 mb-4">
-        {isEditingBookName ? (
-          <>
-            <input
-              type="text"
-              className="text-black px-2 py-1 rounded border"
-              value={editedBookName}
-              onChange={(e) => setEditedBookName(e.target.value)}
-            />
+return (
+  <div className="p-6 text-black">
+    <button
+      onClick={() => router.push('/')}
+      className="text-blue-500 hover:underline mb-6 text-lg"
+    >
+      ← Back to All Recipe Books
+    </button>
 
-            <ReactiveButton 
-                onClick={handleSaveBookName}
-                color="violet" 
-                idleText="Save" 
-                style={{
-                    margin: "5px",
-                    width: "100%",
-                }}
-            />
-            <ReactiveButton 
-                onClick={() => setIsEditingBookName(false)}
-                color="violet" 
-                idleText="Cancel" 
-                style={{
-                    margin: "5px",
-                    width: "100%",
-                }}
-            />
-            {/* className="bg-gray-500 px-3 py-1 rounded text-white" */}
-          </>
-        ) : (
-          <>
-          {/* owner can edit book name */}
+    {/* Editable book name section */}
+    <div className="flex items-center gap-2 mb-4">
+      {isEditingBookName ? (
+        <>
+          <input
+            type="text"
+            className="text-black px-2 py-1 rounded border"
+            value={editedBookName}
+            onChange={(e) => setEditedBookName(e.target.value)}
+          />
+          <ReactiveButton 
+              onClick={handleSaveBookName}
+              color="violet" 
+              idleText="Save" 
+              style={{ margin: "5px", width: "50%" }}
+          />
+          <ReactiveButton 
+              onClick={() => setIsEditingBookName(false)}
+              color="violet" 
+              idleText="Cancel" 
+              style={{ margin: "5px", width: "50%" }}
+          />
+        </>
+      ) : (
+        <>
           <h1 className="text-3xl font-bold">{bookName}</h1>
-
-            {access === 'owner' && (
-              <button
-                onClick={() => {
-                  setEditedBookName(bookName);
-                  setIsEditingBookName(true);
-                }}
-                className="bg-green-500 px-4 py-1 rounded text-white"
-              >
-                Change Name
-              </button>
-            )}
-          </>
-        )}
-      </div>
-        <p className="mb-4">{relationships}</p>
-        {access === 'owner' && (
-        <div className="my-6">
-          {/* owner can invite other people */}
-          {!inviteMode ? (
+          {access === 'owner' && (
             <button
-              onClick={handleInviteButtonClick}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={() => {
+                setEditedBookName(bookName);
+                setIsEditingBookName(true);
+              }}
+              className="bg-green-500 px-4 py-1 rounded text-white"
             >
-              Invite Other User
+              Change Name
             </button>
-          ) : (
-            <div className="flex flex-col md:flex-row items-center gap-2">
-              <select
-                value={inviteRole}
-                onChange={(e) => setInviteRole(e.target.value as 'read_only' | 'coedit')}
-                className="border px-2 py-1 rounded text-black"
-              >
-                <option value="read_only">Read Only</option>
-                <option value="coedit">Co-Editor</option>
-              </select>
-              <input
-                type="text"
-                value={inviteUsername}
-                onChange={(e) => setInviteUsername(e.target.value)}
-                placeholder="Enter username to invite"
-                className="border px-2 py-1 rounded text-black"
-              />
-              <button
-                onClick={handleSendInvite}
-                className="bg-green-500 text-white px-4 py-1 rounded"
-              >
-                Confirm Invite
-              </button>
-              <button
-                onClick={handleCancelInvite}
-                className="bg-red-500 text-white px-4 py-1 rounded"
-              >
-                Cancel
-              </button>
-            </div>
           )}
-        </div>
+        </>
       )}
-      {/* owner and coeditor can add, delete recipes */}
-        {(access === 'owner' || access === 'coedit') && (
-          <div className="flex items-center gap-2 mb-6">
+    </div>
+
+    <p className="mb-4">{relationships}</p>
+
+    {/* Invitation UI */}
+    {access === 'owner' && (
+      <div className="my-6">
+        {!inviteMode ? (
+          <button
+            onClick={handleInviteButtonClick}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Invite Other User
+          </button>
+        ) : (
+          <div className="flex flex-col md:flex-row items-center gap-2">
+            <select
+              value={inviteRole}
+              onChange={(e) => setInviteRole(e.target.value as 'read_only' | 'coedit')}
+              className="border px-2 py-1 rounded text-black"
+            >
+              <option value="read_only">Read Only</option>
+              <option value="coedit">Co-Editor</option>
+            </select>
             <input
               type="text"
-              className="text-black px-2 py-1 rounded border"
-              value={newRecipeName}
-              onChange={(e) => setNewRecipeName(e.target.value)}
-              placeholder="New recipe name"
+              value={inviteUsername}
+              onChange={(e) => setInviteUsername(e.target.value)}
+              placeholder="Enter username to invite"
+              className="border px-2 py-1 rounded text-black"
             />
-            <ReactiveButton onClick={handleAddRecipe} color="violet" idleText="+ Add Recipe" className="bg-green-500 px-3 py-1 rounded text-white"/>
+            <button
+              onClick={handleSendInvite}
+              className="bg-green-500 text-white px-4 py-1 rounded"
+            >
+              Confirm Invite
+            </button>
+            <button
+              onClick={handleCancelInvite}
+              className="bg-red-500 text-white px-4 py-1 rounded"
+            >
+              Cancel
+            </button>
           </div>
         )}
-        <ul className="list-disc pl-5 space-y-2">
-          {recipes.map((recipe) => (
-            <li key={recipe.id} className="flex items-center gap-2">
-              <Link href={`/book/${bookId}/${recipe.id}`} className="text-blue-400 hover:underline">
-                {recipe.name}
-              </Link>
-  
-              {(access === 'owner' || access === 'coedit') && (
-                <button
-                  onClick={() => handleDeleteRecipe(recipe.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded text-xs"
-                >
-                  Delete
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
       </div>
-    );
+    )}
+
+    {/* Add/Delete recipes */}
+    {(access === 'owner' || access === 'coedit') && (
+      <div className="flex items-center gap-2 mb-6">
+        <input
+          type="text"
+          className="text-black px-2 py-1 rounded border"
+          value={newRecipeName}
+          onChange={(e) => setNewRecipeName(e.target.value)}
+          placeholder="New recipe name"
+        />
+        <ReactiveButton
+          onClick={handleAddRecipe}
+          color="violet"
+          idleText="+ Add Recipe"
+          className="bg-green-500 px-3 py-1 rounded text-white"
+        />
+      </div>
+    )}
+
+    <ul className="list-disc pl-5 space-y-2">
+      {recipes.map((recipe) => (
+        <li key={recipe.id} className="flex items-center gap-2">
+          <Link href={`/book/${bookId}/${recipe.id}`} className="text-blue-400 hover:underline">
+            {recipe.name}
+          </Link>
+
+          {(access === 'owner' || access === 'coedit') && (
+            <button
+              onClick={() => handleDeleteRecipe(recipe.id)}
+              className="bg-red-500 text-white px-2 py-1 rounded text-xs"
+            >
+              Delete
+            </button>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 }
-  
