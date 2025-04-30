@@ -40,6 +40,7 @@ export async function uploadImage(file: File) {
         console.error("Duplicate upload");
         return { errors: { general: "Duplicate upload is not allowed" } };
     }
+    // potential response: "API V1 public key can't be null. Go to /dashboard and set the Guest API key."
     
     console.log("Received URL:", url);
     return { url: url };

@@ -14,5 +14,13 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addBase }) {
+      addBase({
+        'ul, ol': {
+          listStyle: 'revert',
+        },
+      });
+    },
+  ],
 } satisfies Config;
