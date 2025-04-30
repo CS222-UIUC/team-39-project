@@ -24,9 +24,29 @@ export default function RecipeBookActions({ initialRecipeBooks, username }: Reci
     const [newRecipeBookName, setNewRecipeBookName] = useState('');
 
     const loadBooks = async () => {
-        if (!username) return;
-        const formattedBooks = await getRecipeBookList(username); 
-        setRecipeBooks(formattedBooks);
+      if (!username) return;
+    
+      const books = await getRecipeBookList(username);
+    
+      const booksWithAccess = await Promise.all(
+        books.map(async (book) => {
+          try {
+            const accessInfo = await getAccessDetails(username, book.id);
+            return {
+              ...book,
+              access: accessInfo.access_to_it as 'owner' | 'coedit' | 'read_only',
+            };
+          } catch (error) {
+            console.error('Error fetching access for book:', book.id, error);
+            return {
+              ...book,
+              access: 'read_only', // fallback
+            };
+          }
+        })
+      );
+    
+      setRecipeBooks(booksWithAccess);
     };
 
     useEffect(() => {
@@ -91,6 +111,15 @@ export default function RecipeBookActions({ initialRecipeBooks, username }: Reci
                     Delete
                     </button>
                 )}
+                {(book.access === 'coedit' || book.access === 'read_only') && (
+                  <button
+                    onClick={() => handleDeleteRecipeBook(book.id)}
+                    className="bg-red-500 text-white px-2 py-1 rounded text-xs"
+                  >
+                    Remove Access
+                  </button>
+                )}
+
                 </li>
             ))}
             </ul>
