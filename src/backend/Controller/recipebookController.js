@@ -61,7 +61,7 @@ const postRecipeBook = (req, res) => {
 
   console.log('createRecipeBook called:', username, book_name);
 
-  if (!username || !book_name) {
+  if (!username || book_name === undefined) {
     return res.status(400).json({ error: 'Missing Fields' });
   }
 
@@ -209,7 +209,7 @@ const postRecipeBook = (req, res) => {
     console.log('changeRecipeBookName called');
     const { book_id, new_book_name } = req.body;
   
-    if (!book_id || !new_book_name) {
+    if (!book_id || new_book_name === undefined) {
       return res.status(400).json({ ok: false, error: 'Missing required fields' });
     }
   
