@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import rehypeSanitize from 'rehype-sanitize';
 import React, { useState, useEffect, useRef } from "react";
 import MDEditor, { commands } from '@uiw/react-md-editor'; // https://github.com/uiwjs/react-md-editor?tab=readme-ov-file
@@ -89,6 +90,7 @@ interface ClientRecipePageProps {
 }
 
 export default function ClientRecipePage({ username, bookId, foodId }: ClientRecipePageProps) {
+    const router = useRouter();
     const [recipeName, setRecipeName] = useState('');
     const [recipeCategory, setRecipeCategory] = useState('');
     const [ingredients, setIngredients] = useState('');
@@ -178,6 +180,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
     if (!mounted) return null; // Wait until the component is mounted
 
     return (
+        
         <div
             ref={containerRef}
             className="container w-full"
@@ -208,11 +211,11 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
             
             <div ref={buttonRef} className="w-full flex justify-center items-center">
                 <ReactiveButton 
+                onClick={() => router.push(`/book/${bookId}`)}
                     color="violet"
                     idleText="Return to Recipe List"
                     className="w-1/2 m-1"
                 />
-
                 <ReactiveButton 
                     onClick={() => setPreview(preview === "edit" ? "preview" : "edit")}
                     color="violet" 
