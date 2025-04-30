@@ -178,7 +178,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
     return (
         <div
             ref={containerRef}
-            className="container w-full"
+            className="w-full"
             style={{
                 height: "100vh", // Set container height to full webpage height
                 width: "100%",
@@ -205,19 +205,20 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
             </div>
             
             <div ref={buttonRef} className="w-full flex">
-                <button 
-                    className="w-1/4 m-1 bg-violet-500 text-white rounded text-sm sm:text-xs"
-                >
-                    Return to Recipe Book
-                </button>
+                <ReactiveButton 
+                    color="violet"
+                    idleText="Return to Recipe Book"
+                    className="w-1/4 m-1 sm:text-xs"
+                    size="tiny"
+                />
 
-                <button 
+                <ReactiveButton 
                     onClick={() => setPreview(preview === "edit" ? "preview" : "edit")}
-                    className="w-1/4 m-1 ml-2 bg-violet-500 text-white rounded text-sm sm:text-xs"
-                >
-                    {preview === "edit" ? "Switch to Preview Mode" : "Switch to Edit Mode"}
-                </button>
-                
+                    color="violet" 
+                    idleText={preview === "edit" ? "Switch to Preview Mode" :  "Switch to Edit Mode"} 
+                    className="w-1/4 m-1 ml-2 sm:text-xs"
+                    size="tiny"
+                />
 
                 <div className="w-1/4 flex items-center">
                     <h2 className="font-bold mb-2 mr-2">Category:</h2>
