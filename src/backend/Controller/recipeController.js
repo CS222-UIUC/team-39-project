@@ -63,7 +63,7 @@ const getAllRecipes = (req, res) => {
 const postRecipe = (req, res) => {
   const { book_id, recipe_name } = req.body;
   console.log('postRecipe called', book_id, recipe_name);
-  if (!book_id || !recipe_name) {
+  if (!book_id || recipe_name === undefined) {
     return res.status(400).json({ error: 'Missing field' });
   }
 
@@ -135,7 +135,7 @@ const deleteRecipe = (req, res) => {
 const updateRecipe = (req, res) => {
     const { recipe_id, recipe_name, recipe_category, recipe_ingredients, recipe_steps } = req.body;
     console.log('updateRecipe called', recipe_id);
-    if (!recipe_id || !recipe_name || !recipe_category) {
+    if (!recipe_id || recipe_name === undefined || !recipe_category) {
       return res.status(400).json({ error: 'Missing fields' });
     }
 
@@ -155,7 +155,7 @@ const updateRecipe = (req, res) => {
 export {
    updateRecipe, 
    getOneRecipe, 
-   //getRecipeList,   
+   //getRecipeList,
    deleteRecipe,
    postRecipe
   };
