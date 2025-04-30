@@ -143,8 +143,6 @@ npm run dev
 
 # Next.js
 > "Next.js is a React framework for building full-stack web applications. You use React Components to build user interfaces, and Next.js for additional features and optimizations."
-- How to learn
-    - Zory's currently at https://nextjs.org/docs/app/getting-started/layouts-and-pages
 - Set-up environment
     ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
@@ -198,31 +196,3 @@ Jest: https://nextjs.org/docs/app/building-your-application/testing/jest
 
 # Reference
 1. https://nextjs.org/docs/app/getting-started/project-structure
-
-# Just for backup
-```
-const TestButton = () => {
-    console.log("TestButton ready");
-    const click = async () => {
-        try {
-            alert("Button clicked!");
-            console.log("clicked");
-            const response = await fetch("http://localhost:2333/api/recipe/1", {
-                method: 'GET',
-            });
-    
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-    
-            const data = await response.json();
-            console.log("Fetched data:", data);
-        } catch (error) {
-            console.error("Fetch error:", error);
-        }
-    };
-    return (
-        <button onClick={click}>Click here for signing up instead</button>
-    );
-};
-```

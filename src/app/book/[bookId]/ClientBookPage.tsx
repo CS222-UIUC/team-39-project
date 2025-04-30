@@ -115,7 +115,7 @@ export default function ClientBookPage({ id, username }: { id: number; username:
       setInviteUsername('');
 };
     return (
-      // only owner of the book can edti the name
+      // only owner of the book can edit the name
       <div className="p-6 text-black">
         <div className="flex items-center gap-2 mb-4">
         {isEditingBookName ? (
@@ -133,7 +133,7 @@ export default function ClientBookPage({ id, username }: { id: number; username:
                 idleText="Save" 
                 style={{
                     margin: "5px",
-                    width: "50%", // Occupy half width
+                    width: "100%",
                 }}
             />
             <ReactiveButton 
@@ -142,7 +142,7 @@ export default function ClientBookPage({ id, username }: { id: number; username:
                 idleText="Cancel" 
                 style={{
                     margin: "5px",
-                    width: "50%", // Occupy half width
+                    width: "100%",
                 }}
             />
             {/* className="bg-gray-500 px-3 py-1 rounded text-white" */}
