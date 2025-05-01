@@ -90,7 +90,7 @@ Here is an example of how you can use this space for ingredients.
 
             db.query(
               defaultRecipeQuery,
-              [example_recipe_name, example_ingredients, example_steps, 'Sample'],
+              [example_recipe_name, example_ingredients, example_steps, 'Uncategorized'],
               (recipeErr, recipeResult) => {
                 if (recipeErr) {
                   console.error('Error adding default recipe:', recipeErr);

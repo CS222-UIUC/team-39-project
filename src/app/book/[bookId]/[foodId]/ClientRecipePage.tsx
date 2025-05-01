@@ -196,11 +196,11 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                             type="text"
                             value={recipeName}
                             onChange={(e) => setRecipeName(e.target.value)}
-                            className="text-2xl font-bold m-0 mt-2 p-1 pl-6 w-full text-center border-2 border-gray-300 rounded-md"
+                            className="text-2xl font-bold m-1 mt-0 p-1 pt-0 w-full text-center border-2 border-gray-300 rounded-md"
                             placeholder="Enter recipe name here..."
                         />
                     ) : (
-                        <h1 className="text-2xl font-bold m-1 p-1 w-full text-center" style={{ margin: "10px", width: "100%" }}>
+                        <h1 className="text-2xl font-bold m-1 p-1 w-full text-center">
                             {recipeName}
                         </h1>
                     )
@@ -208,41 +208,41 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
             </div>
             
             <div ref={buttonRef} className="w-full flex">
-                <ReactiveButton 
-                onClick={() => router.push(`/book/${bookId}`)}
-                    color="violet"
-                    idleText="Return to Recipe Book"
-                    className="w-1/4 m-1 sm:text-xs"
-                    size="tiny"
-                />
-                <ReactiveButton 
+                <button 
+                    onClick={() => router.push(`/book/${bookId}`)}
+                    className="p-1 m-1 bg-violet-500 text-white rounded text-sm "
+                >
+                    Return to Recipe Book
+                </button>
+                
+                {access !== 'read_only' && (<button 
                     onClick={() => setPreview(preview === "edit" ? "preview" : "edit")}
-                    color="violet" 
-                    idleText={preview === "edit" ? "Switch to Preview Mode" :  "Switch to Edit Mode"} 
-                    className="w-1/4 m-1 ml-2 sm:text-xs"
-                    size="tiny"
-                />
+                    className="p-1 m-1 ml-2 bg-violet-500 text-white rounded text-sm"
+                >
+                    {preview === "edit" ? "Switch to Preview Mode" : "Switch to Edit Mode"}
+                </button>)}
 
-                <div className="w-1/4 flex items-center">
-                    <h2 className="font-bold mb-2 mr-2">Category:</h2>
-                    {preview === "edit" ? (
-                        <select
-                            value={recipeCategory}
-                            onChange={(e) => setRecipeCategory(e.target.value)}
-                            className="border border-gray-300 rounded px-2 py-1"
-                        >
-                            {CATEGORIES.map((cat) => (
-                                <option key={cat} value={cat}>
-                                    {cat}
-                                </option>
-                            ))}
-                        </select>
-                    ) : (
-                        <p className="text-gray-700">
-                            {recipeCategory}
-                        </p>
-                    )}
-                </div>
+                {/*<div className="flex">*/}
+                <h2 className="font-bold m-1 p-1 items-center">Category:</h2>
+                
+                {preview === "edit" ? (
+                    <select
+                        value={recipeCategory}
+                        onChange={(e) => setRecipeCategory(e.target.value)}
+                        className="border border-gray-300 rounded p-1"
+                    >
+                        {CATEGORIES.map((cat) => (
+                            <option key={cat} value={cat}>
+                                {cat}
+                            </option>
+                        ))}
+                    </select>
+                ) : (
+                    <p className="text-gray -700 p-1 m-1">
+                        {recipeCategory}
+                    </p>
+                )}
+                {/*</div>*/}
             </div>
 
             <h2
@@ -259,7 +259,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                     rehypePlugins: [[rehypeSanitize]],
                 }}
                 textareaProps={{
-                    placeholder: "Input here for ingredients.",
+                    placeholder: "Input ingredients here ...",
                 }}
                 preview={preview}
                 commands={editorCommands}
@@ -267,6 +267,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                 visibleDragbar={false}
                 highlightEnable={false}
                 height={editorHeight}
+                //minHeight={editorHeight}
                 style={{ 
                     whiteSpace: 'white-space-collapse',
                     overflow: 'auto',
@@ -287,7 +288,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                     rehypePlugins: [[rehypeSanitize]],
                 }}
                 textareaProps={{
-                    placeholder: "Input here for steps.",
+                    placeholder: "Input steps here ...",
                 }}
                 preview={preview}
                 commands={editorCommands}
@@ -295,6 +296,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                 visibleDragbar={false}
                 highlightEnable={false}
                 height={editorHeight}
+                //minHeight={editorHeight}
                 style={{ 
                     whiteSpace: 'normal',
                     overflow: 'auto',
