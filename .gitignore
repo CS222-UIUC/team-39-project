@@ -2,13 +2,12 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=nextjs
 .vscode/
 
-### NextJS ###
-# dependencies
 /node_modules
 /src/backend/node_modules
 /.pnp
 .pnp.js
 /src/backend/.env
+.env
 
 # testing
 /coverage

@@ -29,3 +29,14 @@ body {
 
 /* markdown editer */
 img[alt=userphoto] { width: 170px; }
+.w-md-editor .w-md-editor-text-input {
+    min-height: 100% !important;
+}
+
+.w-md-editor .w-md-editor-text {
+    min-height: 100% !important;
+}
+
+.w-md-editor-content {
+    height: 100% !important;
+}

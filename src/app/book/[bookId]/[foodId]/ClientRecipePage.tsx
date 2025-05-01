@@ -167,12 +167,31 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
         const timeoutId2 = setTimeout(calculateHeight, 100);
         const timeoutId3 = setTimeout(calculateHeight, 500);
         
+        // Give the DOM time to render
+        const timer = setTimeout(() => {
+            const textAreas = document.querySelectorAll('.w-md-editor-text');
+            textAreas.forEach(el => {
+                (el as HTMLElement).style.minHeight = '100%';
+            });
+            
+            const textInputs = document.querySelectorAll('.w-md-editor-text-input');
+            textInputs.forEach(el => {
+                (el as HTMLElement).style.minHeight = '100%';
+            });
+            
+            const contents = document.querySelectorAll('.w-md-editor-content');
+            contents.forEach(el => {
+                (el as HTMLElement).style.height = '100%';
+            });
+        }, 50);
+        
         return () => {
             // the cleanup function
             window.removeEventListener("resize", calculateHeight);
             clearTimeout(timeoutId1);
             clearTimeout(timeoutId2);
             clearTimeout(timeoutId3);
+            clearTimeout(timer);
         };
     }, [preview]); // Include preview in dependencies to recalculate when switching modes
 
@@ -261,6 +280,10 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                 }}
                 textareaProps={{
                     placeholder: "Input ingredients here ...",
+                    style: { 
+                        height: '100%', 
+                        minHeight: '100%' 
+                    },
                 }}
                 preview={preview}
                 commands={editorCommands}

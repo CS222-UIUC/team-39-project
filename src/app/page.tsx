@@ -7,14 +7,34 @@ import { getRecipeBookList } from '@/app/lib/recipes';
 import { logout } from '@/app/actions/auth'
  
 export default async function Page() {
-    const session = (await cookies()).get('session')?.value
-    const payload = await decrypt(session)
-   
-    if (!session || !payload) {
-        redirect('/login')
+    let redirectPath: string | null = null
+    let payload;
+    let recipeBooks;
+
+    try {
+        const session = (await cookies()).get('session')?.value
+        
+        if (!session) {
+            redirectPath = '/login';
+            return;
+        }
+        
+        payload = await decrypt(session);
+        
+        if (!payload) {
+            redirectPath = '/login';
+            return;
+        }
+        
+        console.log('Fetching books for', payload.username);
+        recipeBooks = await getRecipeBookList(payload.username);
+    } catch (error) {
+        console.error('Session verification failed:', error);
+        redirectPath = `/403`
+    } finally {
+        if (redirectPath)
+            redirect(redirectPath)
     }
-    console.log('Fetching books for', payload.username);
-    const recipeBooks = await getRecipeBookList(payload.username);
 
     return (
         <div>
