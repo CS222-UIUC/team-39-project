@@ -1,7 +1,7 @@
 // user interaction in login page, so we need a client to handle it
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { getRecipeBookList, addRecipeBook, deleteRecipeBook, getAccessDetails } from '@/app/lib/recipes';
 
@@ -23,7 +23,7 @@ export default function RecipeBookActions({ initialRecipeBooks, username }: Reci
     const [recipeBooks, setRecipeBooks] = useState<RecipeBook[]>([]);
     const [newRecipeBookName, setNewRecipeBookName] = useState('');
 
-    const loadBooks = async () => {
+    const loadBooks = useCallback(async () => {
       if (!username) return;
     
       const books = await getRecipeBookList(username);
@@ -47,11 +47,11 @@ export default function RecipeBookActions({ initialRecipeBooks, username }: Reci
       );
     
       setRecipeBooks(booksWithAccess);
-    };
+    }, [username]);
 
     useEffect(() => {
-        loadBooks();
-    }, [username]);    
+      loadBooks();
+    }, [loadBooks]);    
 
     const handleAddRecipeBook = async () => {
         if (!newRecipeBookName.trim()) return;

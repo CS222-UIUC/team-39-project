@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ReactiveButton from 'reactive-button';
@@ -28,7 +28,7 @@ export default function ClientBookPage({ id, username }: { id: number; username:
 
     const [relationships, setRelationships] = useState('');
   
-    const loadBookData = async () => {
+    const loadBookData = useCallback(async () => {
       if (!bookId || typeof bookId !== 'string') return;
     
       try {
@@ -51,11 +51,11 @@ export default function ClientBookPage({ id, username }: { id: number; username:
       } catch (error) {
         console.error('Error loading book data:', error);
       }
-    };
+    }, [bookId, username]);
   
     useEffect(() => {
       loadBookData();
-    }, [bookId]);
+    }, [loadBookData]);
 
     const handleSaveBookName = async () => {
       try {
