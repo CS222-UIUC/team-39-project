@@ -106,22 +106,23 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
     const buttonRef = useRef<HTMLDivElement>(null);
     const headerRef1 = useRef<HTMLHeadingElement>(null);
     const headerRef2 = useRef<HTMLHeadingElement>(null);
-    
+    const numericFoodId = parseInt(foodId);
+    const numericBookId = parseInt(bookId);
     useEffect(() => {
         const loadData = async () => {
-            const recipe = await getRecipe(parseInt(foodId));
+            const recipe = await getRecipe((numericFoodId));
             setRecipeName(recipe.name);
             setRecipeCategory(recipe.category);
             setIngredients(recipe.ingredients);
             setSteps(recipe.steps);
 
-            const accessInfo = await getAccessDetails(username, parseInt(bookId));
+            const accessInfo = await getAccessDetails(username, numericBookId);
             setAccess(accessInfo.access_to_it);
             console.log('Access:', accessInfo.access_to_it);
         };
 
         loadData();
-    }, [bookId, foodId, username]);
+    }, [username, numericFoodId, numericBookId]);
     
     useEffect(() => {
         console.log('[DEBUG] Auto-save triggered', {
@@ -137,7 +138,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                 .catch((err) => console.error('Auto-save failed', err));
         }, 500);
         return () => clearTimeout(debounce);
-    }, [recipeName, recipeCategory, ingredients, steps, preview, access]);
+    }, [foodId, recipeName, recipeCategory, ingredients, steps, preview, access]);
 
     useEffect(() => {
         setMounted(true);
