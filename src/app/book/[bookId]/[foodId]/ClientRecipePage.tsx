@@ -230,14 +230,14 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
             <div ref={buttonRef} className="w-full flex">
                 <button 
                     onClick={() => router.push(`/book/${bookId}`)}
-                    className="p-1 m-1 bg-violet-500 text-white rounded text-sm "
+                    className="p-1 m-1 bg-violet-500 hover:bg-violet-700 text-white rounded text-sm"
                 >
                     Return to Recipe Book
                 </button>
                 
                 {access !== 'read_only' && (<button 
                     onClick={() => setPreview(preview === "edit" ? "preview" : "edit")}
-                    className="p-1 m-1 ml-2 bg-violet-500 text-white rounded text-sm"
+                    className="p-1 m-1 ml-2 bg-violet-500 hover:bg-violet-700 text-white rounded text-sm"
                 >
                     {preview === "edit" ? "Switch to Preview Mode" : "Switch to Edit Mode"}
                 </button>)}
