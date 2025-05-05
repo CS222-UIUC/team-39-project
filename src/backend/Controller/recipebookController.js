@@ -25,7 +25,6 @@ const getAllRecipeBooks = async (req, res) => {
 };
 
 
-// Post a new recipeBook for a user
 const postRecipeBook = async (req, res) => {
   console.log('postRecipeBook called');
   const { username, book_name } = req.body;
@@ -44,7 +43,6 @@ const postRecipeBook = async (req, res) => {
   }
 };
   
-  // Delete a recipeBook
   const deleteRecipeBook = async (req, res) => {
     const { username, book_id } = req.body;
     if (!username || !book_id) return res.status(400).json({ ok: false, error: 'username and book_id are required' });
@@ -127,7 +125,6 @@ const getRecipeBookContent = async (req, res) => {
       }
     
       try {
-        // 获取所有数据并发进行
         const [[ownerRow], coeditRows, readonlyRows] = await Promise.all([
           promiseQuery(`SELECT OwnerId AS owner FROM RecipeBooks WHERE RecipeBookId = ?`, [book_id]),
           promiseQuery(`SELECT UserId FROM Coedit WHERE RecipeBookId = ?`, [book_id]),
