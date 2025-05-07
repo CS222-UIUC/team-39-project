@@ -5,8 +5,6 @@ import rehypeSanitize from 'rehype-sanitize';
 import React, { useState, useEffect, useRef } from "react";
 import MDEditor, { commands } from '@uiw/react-md-editor'; // https://github.com/uiwjs/react-md-editor?tab=readme-ov-file
 import _jsxRuntime from "react/jsx-runtime";
-import { useParams as useNextParams } from "next/navigation";
-import ReactiveButton from 'reactive-button';
 
 import { getRecipe, updateRecipe, getAccessDetails } from "@/app/lib/recipes";
 import { uploadImage } from '@/app/actions/upload';

@@ -1,47 +1,58 @@
 "use server"
 import { getEnvVariable } from '@/app/lib/config';
 import { getUsername } from '@/app/actions/auth';
-const UPLOAD_API = getEnvVariable('UPLOAD_API');
-const UPLOAD_API_KEY = getEnvVariable('UPLOAD_API_KEY');
+import { redirect } from 'next/navigation';
+
+const GCS_BUCKET_NAME = getEnvVariable('GCS_BUCKET_NAME');
+const GCS_ACCESS_TOKEN = getEnvVariable('GCS_ACCESS_TOKEN');
 
 export async function uploadImage(file: File) {
-    // https://www.imagehub.cc/api-v1
     const user_name = await getUsername();
     if (!user_name) {
         console.error("User not logged in");
-        return { errors: { general: "User not logged in" } };
+        redirect('/login');
     }
-    
-    const formData = new FormData();
-    formData.append("source", file);
-    formData.append("description", `Uploaded by ${user_name}`);
-    formData.append("format", "txt");
-    formData.append("width", "1024");
-    formData.append("album_id", "CpxWr");
 
-    console.log("formData", formData);
-    console.log("UPLOAD_API", UPLOAD_API);
-    console.log("UPLOAD_API_KEY", UPLOAD_API_KEY);
-    const response = await fetch(UPLOAD_API, {
-        method: 'POST',
-        headers: {
-            'X-API-Key': UPLOAD_API_KEY,
-        },
-        body: formData,
-    });
+    const fileName = file.name;
+    const fileExtension = fileName.slice(((fileName.lastIndexOf(".") - 1) >>> 0) + 2);
+    const objectName = `${user_name}/${Date.now()}.${fileExtension || 'bin'}`; // Use timestamp to avoid conflicts
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        console.error(errorData.error);
-        return { errors: { general: errorData.error } };
+    const uploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${GCS_BUCKET_NAME}/o?uploadType=media&name=${encodeURIComponent(objectName)}`;
+
+    console.log("Uploading to GCS:", objectName);
+    console.log("Upload URL:", uploadUrl);
+    console.log("File type:", file.type);
+
+    try {
+        const response = await fetch(uploadUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${GCS_ACCESS_TOKEN}`,
+                'Content-Type': file.type || 'application/octet-stream', // Infer content type or use a default
+            },
+            body: file,
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("GCS Upload Error:", errorData);
+            const errorMessage = errorData.error?.message || "Failed to upload to Google Cloud Storage.";
+            return { errors: { general: errorMessage } };
+        }
+
+        // The response from GCS after a successful upload contains metadata about the object.
+        // We need to construct the public URL.
+        const publicUrl = `https://storage.googleapis.com/${GCS_BUCKET_NAME}/${objectName}`;
+        
+        console.log("GCS Upload Successful. Public URL:", publicUrl);
+        return { url: publicUrl };
+
+    } catch (error) {
+        console.error("Network or other error during GCS upload:", error);
+        let errorMessage = "An unexpected error occurred during upload.";
+        if (error instanceof Error) {
+            errorMessage = error.message;
+        }
+        return { errors: { general: errorMessage } };
     }
-    const url = await response.text();
-    if (url == "重复上传") {
-        console.error("Duplicate upload");
-        return { errors: { general: "Duplicate upload is not allowed" } };
-    }
-    // potential response: "API V1 public key can't be null. Go to /dashboard and set the Guest API key."
-    
-    console.log("Received URL:", url);
-    return { url: url };
 };
