@@ -8,7 +8,7 @@ import ClientBookPage from './ClientBookPage';
 import { redirect } from 'next/navigation';
 
 type PageProps = {
-    params: { bookId: string };
+    params: Promise<{ bookId: string }>; // Modified to be a Promise
 }
 
 export default async function RecipeBookPageWrapper(props: PageProps) 
@@ -31,6 +31,7 @@ export default async function RecipeBookPageWrapper(props: PageProps)
         redirect(`/403`);
     }
   
-    const bookId = parseInt(props.params.bookId, 10); // https://nextjs.org/docs/messages/sync-dynamic-apis
+    const resolvedParams = await props.params; // Await the params
+    const bookId = parseInt(resolvedParams.bookId, 10); // Access bookId from resolved params
     return <ClientBookPage id={bookId} username={payload.username} />;
 }

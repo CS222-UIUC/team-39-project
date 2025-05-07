@@ -1,9 +1,10 @@
-'use server';
 import { cookies } from 'next/headers'
 import { decrypt } from '@/app/lib/session'
 import { redirect } from 'next/navigation'
 import RecipeBookActions from '@/app/components/RecipeBookActions'
- 
+
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
     let payload;
     try {
