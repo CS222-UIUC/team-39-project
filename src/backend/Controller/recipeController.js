@@ -1,4 +1,4 @@
-import connection from '../Database/connection.js';
+import promiseQuery from '../Utils/promiseQuery.js';
 
 
 
@@ -16,7 +16,6 @@ const postRecipe = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-
 };
 
   
@@ -48,7 +47,7 @@ const getOneRecipe = (req, res) => {
       recipe_steps: recipe.Steps
     });
   });
-
+  
 };
   
 const updateRecipe = (req, res) => {
