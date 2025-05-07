@@ -30,7 +30,11 @@ export async function addRecipeBook(username: string, book_name: string) {
     body: JSON.stringify({ username, book_name }),
   });
 
-  if (!res.ok) throw new Error('Failed to create recipe book');
+  if (!res.ok) {
+    const errorMsg = await res.text();
+    console.error('Error creating recipe book:', errorMsg);
+    throw new Error('Failed to create recipe book');
+  }
 
   const result = await res.json();
 
@@ -134,7 +138,11 @@ export async function addRecipe(book_id: number, recipe_name: string) {
     body: JSON.stringify(body),
   });
 
-  if (!res.ok) throw new Error('Failed to add recipe');
+  if (!res.ok){
+    const errorMsg = await res.text();
+    console.error('Error adding recipe:', errorMsg);
+    throw new Error('Failed to add recipe');
+}
 
   return res.ok; // Return true if successfully added
 }
