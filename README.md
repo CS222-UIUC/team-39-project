@@ -8,8 +8,6 @@
   - **Co-editors** can edit recipes but not manage access
   - **Read-only visitors** can view content only
 - 📝 **Auto-save** and live recipe editing with support for images and categories
-- 🔁 Seamlessly **navigate** between recipe lists and individual recipe pages
-
 
 # Technical Architecture
 ![Technical Architecture](src/app/architecture.png "Technical Architecture Diagram")
