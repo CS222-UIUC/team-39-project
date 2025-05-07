@@ -8,18 +8,29 @@ import ClientBookPage from './ClientBookPage';
 import { redirect } from 'next/navigation';
 
 type PageProps = {
-    params: Promise<{ bookId: number }>; // Ensure `params` is awaited
+    params: { bookId: string };
 }
 
 export default async function RecipeBookPageWrapper(props: PageProps) 
 {
-    const { bookId } = await props.params; // https://nextjs.org/docs/messages/sync-dynamic-apis
-    const session = (await cookies()).get('session')?.value;
-    const payload = await decrypt(session);
-  
-    if (!session || !payload?.username) {
-      redirect('/login'); // Or show a fallback error message
+    let payload;
+    try {
+        const session = (await cookies()).get('session')?.value;
+        if (!session) {
+            console.log('No session found, redirecting to login');
+            redirect('/login');
+        }
+        payload = await decrypt(session);
+        if (!payload) {
+            console.log('Session decryption failed, redirecting to login');
+            redirect('/login');
+        }
+        console.log('Fetching data for', payload.username);
+    } catch (error) {
+        console.error('Session verification or decryption failed:', error);
+        redirect(`/403`);
     }
   
+    const bookId = parseInt(props.params.bookId, 10); // https://nextjs.org/docs/messages/sync-dynamic-apis
     return <ClientBookPage id={bookId} username={payload.username} />;
 }

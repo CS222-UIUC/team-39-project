@@ -74,11 +74,11 @@ const editorCommands = [
     commands.title3,
     commands.divider,
     imageUploadCommand,
-    commands.divider,
-    commands.unorderedListCommand,
-    commands.orderedListCommand,
-    commands.checkedListCommand,
-    commands.divider,
+    //commands.divider,
+    //commands.unorderedListCommand,
+    //commands.orderedListCommand,
+    //commands.checkedListCommand,
+    //commands.divider,
 ];
 
 const editorExtraCommands = [commands.fullscreen];
@@ -119,6 +119,11 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
             const accessInfo = await getAccessDetails(username, numericBookId);
             setAccess(accessInfo.access_to_it);
             console.log('Access:', accessInfo.access_to_it);
+            
+            // if both ingredients and steps are empty, set preview to edit
+            if (!recipe.ingredients && !recipe.steps) {
+                setPreview('edit');
+            }
         };
 
         loadData();
@@ -230,26 +235,26 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
             <div ref={buttonRef} className="w-full flex">
                 <button 
                     onClick={() => router.push(`/book/${bookId}`)}
-                    className="p-1 m-1 bg-violet-500 hover:bg-violet-700 text-white rounded text-sm"
+                    className="px-3 ml-1 bg-violet-500 hover:bg-violet-700 text-white rounded flex-1"
                 >
-                    Return to Recipe Book
+                    Return
                 </button>
                 
                 {access !== 'read_only' && (<button 
                     onClick={() => setPreview(preview === "edit" ? "preview" : "edit")}
-                    className="p-1 m-1 ml-2 bg-violet-500 hover:bg-violet-700 text-white rounded text-sm"
+                    className="px-3 ml-1 bg-violet-500 hover:bg-violet-700 text-white rounded flex-1"
                 >
-                    {preview === "edit" ? "Switch to Preview Mode" : "Switch to Edit Mode"}
+                    {preview === "edit" ? "Preview" : "Edit"}
                 </button>)}
 
                 {/*<div className="flex">*/}
-                <h2 className="font-bold m-1 p-1 items-center">Category:</h2>
+                <h2 className="font-bold p-1 items-center flex-1">Category:</h2>
                 
                 {preview === "edit" ? (
                     <select
                         value={recipeCategory}
                         onChange={(e) => setRecipeCategory(e.target.value)}
-                        className="border border-gray-300 rounded p-1"
+                        className="border border-gray-300 rounded flex-1"
                     >
                         {CATEGORIES.map((cat) => (
                             <option key={cat} value={cat}>
@@ -258,7 +263,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                         ))}
                     </select>
                 ) : (
-                    <p className="text-gray -700 p-1 m-1">
+                    <p className="text-gray -700 m-1 mr-2 flex-1">
                         {recipeCategory}
                     </p>
                 )}
@@ -279,7 +284,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                     rehypePlugins: [[rehypeSanitize]],
                 }}
                 textareaProps={{
-                    placeholder: "Input ingredients here ...",
+                    placeholder: "Put ingredients here ...",
                     style: { 
                         height: '100%', 
                         minHeight: '100%' 
@@ -312,7 +317,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                     rehypePlugins: [[rehypeSanitize]],
                 }}
                 textareaProps={{
-                    placeholder: "Input steps here ...",
+                    placeholder: "Put steps here ...",
                 }}
                 preview={preview}
                 commands={editorCommands}
