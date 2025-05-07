@@ -31,8 +31,6 @@ const deleteRecipe = async (req, res) => {
   }
 };
 
-
-
 const getOneRecipe = async (req, res) => {
   const { recipe_id } = req.query;
   if (!recipe_id) return res.status(400).json({ error: 'Missing recipe_id' });

@@ -57,7 +57,9 @@ const postRecipeBook = async (req, res) => {
   
       const roles = results.map(r => r.role);
       if (roles.includes('owner')) {
-        await promiseQuery(`DELETE FROM RecipeBooks WHERE RecipeBookId = ? AND OwnerId = ?`, [book_id, username]);
+        await promiseQuery(`DELETE FROM ReadOnly WHERE RecipeBookId = ?`, [book_id])
+        await promiseQuery(`DELETE FROM RecipeBooks WHERE RecipeBookId = ?`, [book_id]);
+        await promiseQuery(`DELETE FROM Coedit WHERE RecipeBookId = ? AND UserId = ?`, [book_id, username]);
         return res.json({ ok: true, message: 'Book deleted (owner).' });
       } else {
         await promiseQuery(`DELETE FROM Coedit WHERE RecipeBookId = ? AND UserId = ?`, [book_id, username]);
