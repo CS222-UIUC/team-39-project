@@ -2,9 +2,7 @@
 There are three access levels, from lowest to highest: read only, coedit, and owner.
 
 # Technical Architecture
-```markdown
 ![Technical Architecture](src/app/architecture.png "Technical Architecture Diagram")
-```
 
 # Developers
 - **Dili Wu:**
