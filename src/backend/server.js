@@ -12,6 +12,7 @@ app.use(cors());
 // Define allowed origins
 const allowedOrigins = [
     'http://localhost:3000', // Your local frontend dev server port (adjust if different)
+    'http://10.192.2.76:3000',
     'https://flavorbook.vercel.app', // URL of your deployed frontend (if you have one)
     'https://flavorbook-git-zory-zoryzhangs-projects.vercel.app'
 ];

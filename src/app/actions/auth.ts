@@ -63,20 +63,23 @@ export async function login(formData: FormData) {
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
     
-    const response = await fetch(LOGIN_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-    });
+    try {
+        const response = await fetch(LOGIN_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+        });
+        if (response.status === 403)
+            redirect('/403')
     
-    if (response.status === 403)
+        if (!response.ok) {
+            const errorData = await response.json();
+            return { errors: { general: errorData.error } };
+        }
+    } catch (error) {
         redirect('/403')
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        return { errors: { general: errorData.error } };
     }
- 
+    
     await createSession(username)
     redirect('/')
 }
