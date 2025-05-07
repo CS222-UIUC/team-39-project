@@ -1,14 +1,24 @@
 # What is a FlavorBook?
-There are three access levels, from lowest to highest: read only, coedit, and owner.
+**FlavorBook** is a collaborative recipe book web application where users can:
+- 📚 **Create and manage recipe books**
+- ✍️ **Add, edit, and view recipes** with markdown and image uploading support
+- 👥 **Invite others** as co-editors or read-only viewers to collaborate on books
+- 🔐 **Access control**: ensures safety of recipe books
+  - **Owners** can edit everything and invite others
+  - **Co-editors** can edit recipes but not manage access
+  - **Read-only visitors** can view content only
+- 📝 **Auto-save** and live recipe editing with support for images and categories
+- 🔁 Seamlessly **navigate** between recipe lists and individual recipe pages
+
 
 # Technical Architecture
 ![Technical Architecture](src/app/architecture.png "Technical Architecture Diagram")
 
 # Developers
-- **Dili Wu:**
-- **Zory Zhang:**
-- **Mingqian Wang:**: 
-- **Ruoyi Wu:**
+- **Dili Wu:** Worked on frontend architecture and integration.
+- **Zory Zhang:** Designed UI and implemented image uploading.
+- **Mingqian Wang:**: Worked on database and implemented core backend functions.
+- **Ruoyi Wu:** Worked on invitation function and maintained backend security.
 
 # Environment set up
 ## Set up backend
