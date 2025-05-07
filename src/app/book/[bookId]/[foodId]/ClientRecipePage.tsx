@@ -154,7 +154,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                     - (headerRef1.current ? calculateMarginAdjustedHeight(headerRef1.current) : 0)
                     - (headerRef2.current ? calculateMarginAdjustedHeight(headerRef2.current) : 0);
                     
-                console.log('Available height:', availableHeight);
+                //console.log('Available height:', availableHeight);
                 setEditorHeight(Math.floor(availableHeight / 2));
             }
         };

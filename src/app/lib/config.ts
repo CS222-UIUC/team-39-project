@@ -4,11 +4,5 @@ export function getEnvVariable<T = string>(key: string): T {
     if (value === undefined || value === null) {
         throw new Error(`${key} environment variable is not defined`);
     }
-    try {
-        // Attempt to parse JSON for list-like variables
-        return JSON.parse(value) as T;
-    } catch {
-        // Return as string if not JSON
-        return value as T;
-    }
+    return value as T;
 }

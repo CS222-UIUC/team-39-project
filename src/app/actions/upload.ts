@@ -14,6 +14,8 @@ async function getGcsAccessToken() {
         console.error("GCS service account key JSON is not configured in environment variables.");
         throw new Error("GCS service account key JSON is not configured.");
     }
+    // Log the raw value here
+    console.log("Raw GCS_SERVICE_ACCOUNT_KEY_JSON_STRING from env:", GCS_SERVICE_ACCOUNT_KEY_JSON_STRING);
 
     try {
         const credentials = JSON.parse(GCS_SERVICE_ACCOUNT_KEY_JSON_STRING);
