@@ -182,8 +182,8 @@ export default function ClientBookPage({ id, username }: { id: number; username:
                         onChange={(e) => setInviteRole(e.target.value as 'read_only' | 'coedit')}
                         className="border px-2 py-1 rounded text-black"
                     >
-                        <option value="coedit">Co-Editor</option>
                         <option value="read_only">Read Only</option>
+                        <option value="coedit">Co-Editor</option>
                     </select>
                     <input
                         type="text"
