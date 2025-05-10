@@ -145,16 +145,13 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
         
         const calculateHeight = () => {
             if (containerRef.current) {
-                const availableHeight = 
-                    containerRef.current.offsetHeight
+                const availableHeight = containerRef.current.clientHeight
                     - (titleRef.current ? calculateMarginAdjustedHeight(titleRef.current) : 0)
                     - (buttonRef.current ? calculateMarginAdjustedHeight(buttonRef.current) : 0)
                     - (headerRef1.current ? calculateMarginAdjustedHeight(headerRef1.current) : 0)
                     - (headerRef2.current ? calculateMarginAdjustedHeight(headerRef2.current) : 0);
                     
                 console.log('Available height:', availableHeight);
-                // Adjust the calculation to avoid double scrollbars
-                // Subtract a few pixels to give some breathing room
                 setEditorHeight(Math.floor(availableHeight / 2));
             }
         };
@@ -171,6 +168,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
         const timeoutId3 = setTimeout(calculateHeight, 500);
         
         return () => {
+            // the cleanup function
             window.removeEventListener("resize", calculateHeight);
             clearTimeout(timeoutId1);
             clearTimeout(timeoutId2);
@@ -184,7 +182,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
         
         <div
             ref={containerRef}
-            className="container w-full"
+            className="w-full"
             style={{
                 height: "100vh", // Set container height to full webpage height
                 width: "100%",
@@ -210,31 +208,29 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                 }
             </div>
             
-            <div ref={buttonRef} className="w-full flex justify-center items-center">
+            <div ref={buttonRef} className="w-full flex">
                 <ReactiveButton 
                 onClick={() => router.push(`/book/${bookId}`)}
                     color="violet"
-                    idleText="Return to Recipe List"
-                    className="w-1/2 m-1"
+                    idleText="Return to Recipe Book"
+                    className="w-1/4 m-1 sm:text-xs"
+                    size="tiny"
                 />
                 <ReactiveButton 
                     onClick={() => setPreview(preview === "edit" ? "preview" : "edit")}
                     color="violet" 
                     idleText={preview === "edit" ? "Switch to Preview Mode" :  "Switch to Edit Mode"} 
-                    className="w-1/2 m-1 ml-2"
+                    className="w-1/4 m-1 ml-2 sm:text-xs"
+                    size="tiny"
                 />
 
-                <div style={{ margin: "10px", width: "100%" }}>
-                    <h2 className="text-xl font-bold mb-2">Category:</h2>
+                <div className="w-1/4 flex items-center">
+                    <h2 className="font-bold mb-2 mr-2">Category:</h2>
                     {preview === "edit" ? (
                         <select
                             value={recipeCategory}
                             onChange={(e) => setRecipeCategory(e.target.value)}
-                            style={{
-                                padding: "5px",
-                                fontSize: "1rem",
-                                width: "100%", // Occupy full width
-                            }}
+                            className="border border-gray-300 rounded px-2 py-1"
                         >
                             {CATEGORIES.map((cat) => (
                                 <option key={cat} value={cat}>
@@ -243,7 +239,7 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
                             ))}
                         </select>
                     ) : (
-                        <p className="text-lg" style={{ width: "100%" }}>
+                        <p className="text-gray-700">
                             {recipeCategory}
                         </p>
                     )}
@@ -252,65 +248,59 @@ export default function ClientRecipePage({ username, bookId, foodId }: ClientRec
 
             <h2
                 ref={headerRef1}
-                className="text-xl font-bold mb-4"
-                style={{ width: "100%",margin: "10px",  }}
+                className="text-lg font-bold ml-2 w-full"
             >
             Ingredients
             </h2>
-                
-            <div style={{ flex: 1, marginBottom: "0px", width: "100%", overflow: "hidden" }}>
-                <MDEditor
-                    value={ingredients}
-                    onChange={(value) => setIngredients(value || '')} // Ensure 'value' is always a string
-                    previewOptions={{
-                        rehypePlugins: [[rehypeSanitize]],
-                    }}
-                    textareaProps={{
-                        placeholder: "Input here for ingredients.",
-                    }}
-                    preview={preview}
-                    commands={editorCommands}
-                    extraCommands={editorExtraCommands}
-                    visibleDragbar={false}
-                    highlightEnable={false}
-                    height={editorHeight}
-                    style={{ 
-                      whiteSpace: 'white-space-collapse',
-                      overflow: 'auto'
-                    }}
-                />
-            </div>
+            
+            <MDEditor
+                value={ingredients}
+                onChange={(value) => setIngredients(value || '')} // Ensure 'value' is always a string
+                previewOptions={{
+                    rehypePlugins: [[rehypeSanitize]],
+                }}
+                textareaProps={{
+                    placeholder: "Input here for ingredients.",
+                }}
+                preview={preview}
+                commands={editorCommands}
+                extraCommands={editorExtraCommands}
+                visibleDragbar={false}
+                highlightEnable={false}
+                height={editorHeight}
+                style={{ 
+                    whiteSpace: 'white-space-collapse',
+                    overflow: 'auto',
+                }}
+            />
             
             <h2
                 ref={headerRef2}
-                className="text-xl font-bold mb-4"
-                style={{ width: "100%",margin: "10px",  }}
+                className="text-lg font-bold ml-2 w-full"
             >
                 Steps
             </h2>
             
-            <div style={{ flex: 1, marginBottom: "0px", width: "100%", overflow: "hidden" }}>
-                <MDEditor
-                    value={steps}
-                    onChange={(value) => setSteps(value || '')}
-                    previewOptions={{
-                        rehypePlugins: [[rehypeSanitize]],
-                    }}
-                    textareaProps={{
-                        placeholder: "Input here for steps.",
-                    }}
-                    preview={preview}
-                    commands={editorCommands}
-                    extraCommands={editorExtraCommands}
-                    visibleDragbar={false}
-                    highlightEnable={false}
-                    height={editorHeight}
-                    style={{ 
-                      whiteSpace: 'normal',
-                      overflow: 'auto'
-                    }}
-                />
-            </div>
+            <MDEditor
+                value={steps}
+                onChange={(value) => setSteps(value || '')}
+                previewOptions={{
+                    rehypePlugins: [[rehypeSanitize]],
+                }}
+                textareaProps={{
+                    placeholder: "Input here for steps.",
+                }}
+                preview={preview}
+                commands={editorCommands}
+                extraCommands={editorExtraCommands}
+                visibleDragbar={false}
+                highlightEnable={false}
+                height={editorHeight}
+                style={{ 
+                    whiteSpace: 'normal',
+                    overflow: 'auto',
+                }}
+            />
         </div>
     );
 }

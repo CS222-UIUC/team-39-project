@@ -173,6 +173,7 @@ http://localhost:2333/api/recipe/get_public_book_list
 - return: list of (recipe owner usernames, recipe names)
 ```
 
+
 # Just for backup
 ```
 const TestButton = () => {
@@ -204,4 +205,10 @@ const TestButton = () => {
 Jest: https://nextjs.org/docs/app/building-your-application/testing/jest
 
 ## Reference
+1. https://nextjs.org/docs/app/getting-started/project-structure
+
+# Testing
+Jest: https://nextjs.org/docs/app/building-your-application/testing/jest
+
+# Reference
 1. https://nextjs.org/docs/app/getting-started/project-structure
